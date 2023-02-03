@@ -5,19 +5,21 @@
 
 #define CELL_SIZE 14
 
-struct bit {
-    unsigned int value : 1;
-};
+
+/* STRUCTURES */
 
 typedef struct cell {
-    struct bit bits[CELL_SIZE];
+    int value : CELL_SIZE;
 }cell;
 
 typedef struct cell* pCell;
 
+
+/* METHODS */
+
 cell getEmptyCell();
 cell getCellCopy(pCell);
 cell setBit(pCell,int);
-
+int cellEquals(pCell,pCell);
 
 #endif

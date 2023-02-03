@@ -3,38 +3,49 @@
 #include "cell.h"
 
 cell getEmptyCell() { /* also for resetting */
-    int i;
+
     cell newCell;
-
-    for (i = 0; i < CELL_SIZE; i++)
-        newCell.bits[i].value = 0;
-
+    newCell.value = 0;
     return newCell;
 }
 
 cell getCellCopy(pCell target) {
-    int i;
+    if (target == NULL) {
+        printf("getCellCopy received a null pointer\n");
+        exit(0);
+    }
 
-    cell temp = getEmptyCell();
-    for (i = 0; i < CELL_SIZE; i++)
-        if (target->bits[i].value)
-            temp.bits[i].value = 1;
-
-    if (target != NULL) free(target);
+    cell temp;
+    temp.value = target->value;
     return temp;
 }
 
 cell setBit(pCell target, int bit) {
+    if (target == NULL) {
+        printf("setBit received a null pointer\n");
+        exit(0);
+    }
+
+    if (bit < 0 || bit > 13) {
+        printf("bit out of range (1-13)\n");
+        exit(0);
+    }
 
     cell temp = getCellCopy(target);
-    if (!(target->bits[bit].value))
-        temp.bits[bit].value = 1;
+    temp.value |= 1 << bit;
 
-    if (target != NULL) free(target);
+    free(target);
     return temp;
 }
 
 
 
-int cellEquals(pCell c1, pCell c2);
+int cellEquals(pCell c1, pCell c2) {
+    if (c1 == NULL || c2 == NULL) {
+        printf("cellEquals received a null pointer\n");
+        exit(0);
+    }
+
+    return (c1->value == c2->value);
+}
 
