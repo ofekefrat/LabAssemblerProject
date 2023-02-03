@@ -1,10 +1,7 @@
 #ifndef LABASSEMBLERPROJECT_MAIN_H
 #define LABASSEMBLERPROJECT_MAIN_H
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-
-#include "cell/*"
+#include "libraries.h"
+#include "cell/cell.h"
 
 #endif

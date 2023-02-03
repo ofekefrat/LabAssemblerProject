@@ -1,7 +1,7 @@
 #ifndef LABASSEMBLERPROJECT_CELL_H
 #define LABASSEMBLERPROJECT_CELL_H
 
-#include "../main.h"
+#include "../libraries.h"
 
 #define CELL_SIZE 14
 

@@ -26,7 +26,7 @@ cell setBit(pCell target, int bit) {
         exit(0);
     }
 
-    if (bit < 0 || bit > 13) {
+    if (bit < 0 || bit > CELL_SIZE-1) {
         printf("bit out of range (1-13)\n");
         exit(0);
     }
@@ -37,8 +37,6 @@ cell setBit(pCell target, int bit) {
     free(target);
     return temp;
 }
-
-
 
 int cellEquals(pCell c1, pCell c2) {
     if (c1 == NULL || c2 == NULL) {
