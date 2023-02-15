@@ -1,5 +1,5 @@
-#ifndef LABASSEMBLERPROJECT_CELL_H
-#define LABASSEMBLERPROJECT_CELL_H
+#ifndef cell_h
+#define cell_h
 
 #include "../libraries.h"
 
@@ -17,9 +17,8 @@ typedef struct cell* pCell;
 
 /* METHODS */
 
-cell getEmptyCell();
+cell createCell(int);
 cell getCellCopy(pCell);
-cell setBit(pCell,int);
 int cellEquals(pCell,pCell);
 
 #endif

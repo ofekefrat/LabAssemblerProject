@@ -8,6 +8,9 @@ include_directories(*)
 add_executable(LabAssemblerProject
         libraries.h
         main.h
+        cell/cell.h
+        directive/directive.h
+
         main.c
         cell/cell.c
-        cell/cell.h)
+        directive/directive.c)

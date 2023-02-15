@@ -1,8 +1,8 @@
-#ifndef LABASSEMBLERPROJECT_LIBRARIES_H
-#define LABASSEMBLERPROJECT_LIBRARIES_H
+#ifndef libraries_h
+#define libraries_h
 
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
-#endif //LABASSEMBLERPROJECT_LIBRARIES_H
+#endif

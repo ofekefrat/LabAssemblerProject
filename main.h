@@ -1,7 +1,8 @@
-#ifndef LABASSEMBLERPROJECT_MAIN_H
-#define LABASSEMBLERPROJECT_MAIN_H
+#ifndef main_h
+#define main_h
 
 #include "libraries.h"
 #include "cell/cell.h"
+#include "directive/directive.h"
 
 #endif
