@@ -1,8 +1,8 @@
 #ifndef directive_h
 #define directive_h
 
-#include "../libraries.h"
-#include "../main.h"
+#include "../src/libraries.h"
+#include "../src/main.h"
 
 #define MAX_WORDS 4
 #define ONE_BIT 1

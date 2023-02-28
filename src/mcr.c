@@ -2,7 +2,10 @@
 
 Macro* newMacro(const char* name) {
     Macro* temp = (Macro*) malloc(sizeof(Macro));
-    strcpy(temp->name, name);
+    Macro new;
+    strcpy(new.name, name);
+    new.lineCount = 0;
+    *temp = new;
 
     return temp;
 }
@@ -13,7 +16,7 @@ void addMacroToTable(FILE* input, const char* defLine, Macro** macros) {
     char name[MAX_MACRO_NAME_LENGTH];
 
     strcpy(name, defLine+4);
-    for (i=0; &macros[i] != NULL && i < MAX_MACROS; i++) {
+    for (i=0; macros[i] != NULL && i < MAX_MACROS; i++) {
         if (!strcmp(macros[i]->name, name)) { /* checking if the names ARE equal */
             printf("redefinition of existing macro\n");
             exit(0);
@@ -22,15 +25,16 @@ void addMacroToTable(FILE* input, const char* defLine, Macro** macros) {
     macros[i] = newMacro(name);
 
     while (j < MAX_MACRO_LINES && fgets(line, MAX_LINE_LENGTH, input)) { // fgets, not endmcr && not EOF
-        if (!strcmp(line, "endmcr")) break;
+        if (!strcmp(line, "endmcr\n")) break;
         strcpy(macros[i]->lines[j], line);
+        macros[i]->lineCount++;
         j++;
     }
 }
 
 void spreadMacro(FILE* output, Macro** macros, int macroInd) {
     int i;
-    for (i=0; macros[macroInd]->lines[i] != NULL && i < MAX_MACRO_LINES; i++) {
+    for (i=0; /*macros[macroInd]->lines[i] != NULL*/ i < macros[macroInd]->lineCount && i < MAX_MACRO_LINES; i++) {
         fputs(macros[macroInd]->lines[i], output);
 //        writeLine(output, macros[macroInd]->lines[i]);
     }

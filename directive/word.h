@@ -1,8 +1,8 @@
 #ifndef word_h
 #define word_h
 
-#include "../main.h"
-#include "../libraries.h"
+#include "../src/main.h"
+#include "../src/libraries.h"
 
 typedef struct Word {
     int destinationAM : 2;

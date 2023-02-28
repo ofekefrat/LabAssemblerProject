@@ -3,15 +3,11 @@ project(LabAssemblerProject C)
 
 set(CMAKE_C_STANDARD 90)
 
-include_directories(*)
+include_directories(src)
 
-add_executable(LabAssemblerProject
-        libraries.h
-        main.h
-        cell/cell.h
-        directive/directive.h
-        main.c
-        cell/cell.c
-        directive/directive.c
-        directive/word.h
-        directive/word.c preassembler/main.c preassembler/preassemble.h preassembler/mcr.c)
+add_executable(main
+        src/main.c
+        src/preassemble.c
+        src/mcr.c
+        src/preassemble.h
+)
