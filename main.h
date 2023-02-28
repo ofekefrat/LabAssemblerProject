@@ -4,5 +4,8 @@
 #include "libraries.h"
 #include "cell/cell.h"
 #include "directive/directive.h"
+#include "directive/word.h"
+
+#include "preassembler/preassemble.h"
 
 #endif

@@ -3,22 +3,13 @@
 
 #include "../libraries.h"
 
-#define CELL_SIZE 14
-
-
 /* STRUCTURES */
+typedef struct Cell {
 
-typedef struct cell {
-    int value : CELL_SIZE;
-}cell;
-
-typedef struct cell* pCell;
+}Cell;
 
 
 /* METHODS */
 
-cell createCell(int);
-cell getCellCopy(pCell);
-int cellEquals(pCell,pCell);
 
 #endif

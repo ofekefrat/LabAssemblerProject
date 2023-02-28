@@ -10,7 +10,8 @@ add_executable(LabAssemblerProject
         main.h
         cell/cell.h
         directive/directive.h
-
         main.c
         cell/cell.c
-        directive/directive.c)
+        directive/directive.c
+        directive/word.h
+        directive/word.c preassembler/main.c preassembler/preassemble.h preassembler/mcr.c)

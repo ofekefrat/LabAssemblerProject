@@ -5,4 +5,7 @@
 #include <string.h>
 #include <stdlib.h>
 
+#define MAX_LINE_LENGTH 81
+#define CELL_SIZE 14
+
 #endif
