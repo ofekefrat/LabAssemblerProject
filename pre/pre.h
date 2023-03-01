@@ -1,11 +1,11 @@
 #ifndef preassemble_h
 #define preassemble_h
 
-#include "libraries.h"
+#include "../libraries.h"
 
-#define MAX_MACRO_NAME_LENGTH 666
-#define MAX_MACRO_LINES 666
-#define MAX_MACROS 666
+#define MAX_MACRO_NAME_LENGTH 74 /* max line length minus "mcr " */
+#define MAX_MACRO_LINES 666 //TODO TBD
+#define MAX_MACROS 666 //TODO TBD
 
 typedef struct Macro {
     char name[MAX_MACRO_NAME_LENGTH];

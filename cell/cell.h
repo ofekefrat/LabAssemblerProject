@@ -1,7 +1,7 @@
 #ifndef cell_h
 #define cell_h
 
-#include "../src/libraries.h"
+#include "../libraries.h"
 
 /* STRUCTURES */
 typedef struct Cell {

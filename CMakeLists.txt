@@ -3,11 +3,14 @@ project(LabAssemblerProject C)
 
 set(CMAKE_C_STANDARD 90)
 
-include_directories(src)
+add_subdirectory(pre)
+add_subdirectory(assembly)
 
 add_executable(main
-        src/main.c
-        src/preassemble.c
-        src/mcr.c
-        src/preassemble.h
+        main.c
+        main.h
 )
+
+target_link_libraries(main
+        pre
+        assembly)

@@ -1,12 +1,4 @@
-#include "preassemble.h"
-
-void printFileContent(FILE* file) {
-    char line[MAX_LINE_LENGTH];
-    rewind(file);
-    while (fgets(line, MAX_LINE_LENGTH, file)) { // fgets, not EOF
-        printf("%s", line);
-    }
-}
+#include "pre.h"
 
 FILE* preAssemble(FILE* input) {
 
@@ -17,6 +9,7 @@ FILE* preAssemble(FILE* input) {
 
     while (fgets(line, MAX_LINE_LENGTH, input)) { // fgets, not EOF
 
+        if (line[0] != ';') continue; // the only case where the line should be completely ignored
         if (isDef(line)) {
             addMacroToTable(input, line, macros);
         }
@@ -24,7 +17,7 @@ FILE* preAssemble(FILE* input) {
         else if ( (r = isSpread(macros, line)) ) {
             spreadMacro(output, macros, r-1);
         }
-        else if (line[0] != '\n'){
+        else {
             fputs(line, output);
         }
     }
@@ -40,6 +33,7 @@ int isDef(const char* line) {
     return 1;
 }
 
+//TODO Verify & allow macro spreads inside labels
 int isSpread(Macro** macros, const char* line) {
     int i;
     for (i=0; macros[i] != NULL && i < MAX_MACROS; i++) {
@@ -52,5 +46,13 @@ void freeUnusedMemory(Macro** macros) {
     int i;
     for (i=0; macros[i] != NULL && i < MAX_MACROS; i++) {
         free(macros[i]);
+    }
+}
+
+void printFileContent(FILE* file) {
+    char line[MAX_LINE_LENGTH];
+    rewind(file);
+    while (fgets(line, MAX_LINE_LENGTH, file)) { // fgets, not EOF
+        printf("%s", line);
     }
 }

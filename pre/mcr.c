@@ -1,4 +1,4 @@
-#include "preassemble.h"
+#include "pre.h"
 
 Macro* newMacro(const char* name) {
     Macro* temp = (Macro*) malloc(sizeof(Macro));
@@ -9,7 +9,11 @@ Macro* newMacro(const char* name) {
 
     return temp;
 }
+//TODO No nested macro definitions
+//TODO Macros can't be named after native operation names
+//TODO Make sure macro definitions can be inside labels in the manual
 
+/* It's safe to assume "endmcr" will be present */
 void addMacroToTable(FILE* input, const char* defLine, Macro** macros) {
     int i, j=0;
     char line[MAX_LINE_LENGTH];
