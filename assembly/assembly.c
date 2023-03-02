@@ -9,10 +9,11 @@
 //TODO oger lo kayam
 //TODO labels are defined no more than once
 
+int instructionCounter=0, dataCounter=0;
 
 FILE* assembly(FILE* source) {
-    int instructionCounter=0, dataCounter=0;
 
-
+    Label *labels[MAX_LABELS] = { NULL };
+    Data *data[MAX_DATA] = { NULL };
 
 }
