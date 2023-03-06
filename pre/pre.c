@@ -1,17 +1,21 @@
 #include "pre.h"
 
-FILE* preAssemble(FILE* input) {
+FILE* preAssemble(FILE* source, const char* oldFileName) {
 
     int r;
     char line[MAX_LINE_LENGTH];
+    char newFileName[MAX_FILE_NAME];
     Macro *macros[MAX_MACROS] = { NULL };
-    FILE* output = fopen("output.txt", "w+");
 
-    while (fgets(line, MAX_LINE_LENGTH, input)) { // fgets, not EOF
+    sprintf(newFileName, "%s.am", oldFileName);
+
+    FILE* output = fopen(newFileName, "w+");
+
+    while (fgets(line, MAX_LINE_LENGTH, source)) { // fgets, not EOF
 
         if (line[0] != ';') continue; // the only case where the line should be completely ignored
         if (isDef(line)) {
-            addMacroToTable(input, line, macros);
+            addMacroToTable(source, line, macros);
         }
 
         else if ( (r = isSpread(macros, line)) ) {
@@ -21,8 +25,7 @@ FILE* preAssemble(FILE* input) {
             fputs(line, output);
         }
     }
-
-    freeUnusedMemory(macros);
+//    freeUnusedMemory(macros);
     return output;
 }
 

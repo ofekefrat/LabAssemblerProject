@@ -13,7 +13,7 @@ typedef struct Macro {
     int lineCount;
 }Macro;
 
-FILE* preAssemble(FILE*);
+FILE* preAssemble(FILE* source, const char* oldFileName);
 void printFileContent(FILE*);
 void addMacroToTable(FILE*, const char*, Macro**);
 void spreadMacro(FILE*, Macro**, int);

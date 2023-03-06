@@ -1,13 +1,13 @@
 #include "pre.h"
 
-Macro* newMacro(const char* name) {
-    Macro* temp = (Macro*) malloc(sizeof(Macro));
+Macro newMacro(const char* name) {
+//    Macro* temp = (Macro*) malloc(sizeof(Macro));
     Macro new;
     strcpy(new.name, name);
     new.lineCount = 0;
-    *temp = new;
+//    *temp = new;
 
-    return temp;
+    return new;
 }
 //TODO No nested macro definitions
 //TODO Macros can't be named after native operation names
@@ -26,7 +26,7 @@ void addMacroToTable(FILE* input, const char* defLine, Macro** macros) {
             exit(0);
         }
     }
-    macros[i] = newMacro(name);
+    *macros[i] = newMacro(name);
 
     while (j < MAX_MACRO_LINES && fgets(line, MAX_LINE_LENGTH, input)) { // fgets, not endmcr && not EOF
         if (!strcmp(line, "endmcr\n")) break;
@@ -40,11 +40,5 @@ void spreadMacro(FILE* output, Macro** macros, int macroInd) {
     int i;
     for (i=0; /*macros[macroInd]->lines[i] != NULL*/ i < macros[macroInd]->lineCount && i < MAX_MACRO_LINES; i++) {
         fputs(macros[macroInd]->lines[i], output);
-//        writeLine(output, macros[macroInd]->lines[i]);
     }
 }
-
-//void writeLine(FILE* output, const char* line) {
-//    fputs(line, output);
-//    putc('\n', output);
-//}

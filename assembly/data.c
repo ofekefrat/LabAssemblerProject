@@ -1,34 +1,59 @@
 #include "assembly.h"
 
-Data* newData(union value val) {
-    Data* temp = (Data*) malloc(sizeof(Data));
+void addIntArray(char* line, int* ind, Cell* dataArray) {
+    int i = *ind;
+    int* pInt = NULL;
 
-    Data new;
-    new.val = val;
+    while (line[i] != '\n') {
+        readNextNumber(line, &i, pInt);
+        verifyComma(line, &i);
+        if (pInt != NULL) {
+            if (*pInt < (1 << 15))
+                dataArray[dataCounter++].value = *pInt;
+            else
+                printError("number is too big");
+        }
+    }
 
-    *temp = new;
-    return temp;
+    *ind = i;
 }
 
-Data* addIntArray(char* line, int* ind, Data** dataTable) {
-    int arr[MAX_INT_ARRAY];
+void readNextNumber(const char* line, int* ind, int* pInt) {
+    char digits[MAX_DIGITS];
+    int i = *ind, j=0;
 
-    union value val;
-    val.arr = arr;
-//    dataCounter +=
-    addDataToTable(newData(val), dataTable);
+    memset(digits, 0, MAX_DIGITS);
+
+    skipWhiteSpaces(line, &i);
+    if (line[i] == '-') digits[j++] = line[i++];
+    while (i < strlen(line) && isdigit(line[i])) digits[j++] = line[i++];
+    *ind = i;
+
+    if (!isdigit(digits[0])) printError("No digits found when expecting number");
+    else *pInt = atoi(digits);
 }
 
-Data* addString(char* line, int* ind, Data** dataTable) {
-    char str[MAX_STR_LENGTH];
+int verifyComma(const char* line, int* ind) {
+    int i = *ind;
+    skipWhiteSpaces(line, &i);
 
-    union value val;
-    val.str = str;
-    addDataToTable(newData(val), dataTable);
+    if (line[i] == ',') {
+        *ind = ++i;
+        return 1;
+    }
+    printError("Missing comma");
+    *ind = i;
+    return 0;
 }
 
-void addDataToTable(Data* value, Data** dataTable) {
-    int i=0;
-    while(dataTable[i] != NULL) i++;
-    dataTable[i] = value;
+void addString(char* line, int* ind, Cell* dataArray) {
+    int i = *ind;
+    while (i < strlen(line) && line[i] != '\"') i++;
+
+    for ( i+=1; i < strlen(line) && line[i] != '\"'; i++) {
+        dataArray[dataCounter++].value = (int) line[i];
+    }
+
+    dataArray[dataCounter++].value = 0;
+    *ind = i;
 }
