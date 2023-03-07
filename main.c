@@ -1,7 +1,6 @@
 #include "main.h"
 
 // DON'T FORGET TO CLOSE THE ORIGINAL UNEDITED SOURCE FILE BEFORE ASSEMBLY
-int instructionCounter=0, dataCounter=0;
 
 int main(int argc, char** argv) {
     int fileCount;

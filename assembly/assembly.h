@@ -16,6 +16,7 @@
 #define OPCODE_IND 6
 #define SOURCE_AM_IND 4
 #define DEST_AM_IND 2
+#define INST_ERROR (1 << (WORD_LENGTH-1))
 extern int dataCounter, instructionCounter;
 
 enum opcode {mov, cmp, add, sub, not, clr, lea, inc, dec, jmp, bne,
@@ -26,7 +27,7 @@ enum AddressingMethod {label=1, jump, reg};
 enum LocationType {immediate, ext, reloc};
 
 typedef struct Word {
-    int value : WORD_LENGTH;
+    unsigned int value : WORD_LENGTH;
 }Word;
 
 typedef struct Label {
@@ -53,10 +54,12 @@ int isEntryDirective(const char* word);
 void addInstructionLabel(const char* name, Label** symbolTable);
 Label* getLabel(const char* name, Label** symbolTable);
 
-void addInstruction(const char *line, int *ind, int opcode, Word *instructionArray, Label **symbolTable);
+void addInstruction(const char *line, int *ind, int opcode, Word *instructionArray, Label **symbolTable, Label** externalSymbols);
+Word getSourceOperand(const char* operand, int opcode, Word instruction, Label** symbolTable, Label** externalSymbols);
 void readNextOperand(const char *line, int *ind, char* operand);
 int stillInWord(const char* line, const int* ind);
 int isRegisterOperand(const char* operand);
+int twoOps(int opcode);
 
 void addIntArray(char* line, int* ind, Word* dataArray);
 void addString(char* line, int* ind, Word* dataArray);
@@ -68,5 +71,4 @@ int verifyComma(const char* line, int* ind);
 void printError(const char* str);
 void skipWhiteSpaces(const char* line, int* ind);
 
-Word (*opFunc)(const char* line, int* ind);
 #endif //assembly_h

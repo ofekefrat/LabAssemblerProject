@@ -1,11 +1,8 @@
 #include "assembly.h"
-//TODO Instruction (actual action)
 
 // ERRORS:
 //TODO confusion about cell size
 //TODO unrecognized action
-//TODO incorrect amount of operands
-//TODO incompatible operand type for operation
 //TODO oger lo kayam
 //TODO labels are defined no more than once
 
