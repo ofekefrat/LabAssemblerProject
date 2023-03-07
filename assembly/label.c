@@ -23,13 +23,10 @@ void addInstructionLabel(const char* name, Label** symbolTable) {
     *pLabel = newLabel(name, "code", instructionCounter);
 }
 
-void addExternLabel(const char* name, Label** symbolTable, Label** externalSymbols) {
-    int i=0;
+void addExternLabel(const char* name, Label** symbolTable) {
     Label* pLabel = getNextEmptyLabel(name, symbolTable);
     *pLabel = newLabel(name, "external", 0);
 
-    while (externalSymbols[i] != NULL) i++;
-    *externalSymbols[i] = *pLabel;
 }
 
 void addEntry(const char* name, Label** symbolTable, Label** entrySymbols) {

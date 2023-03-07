@@ -50,7 +50,7 @@ FILE* phase1(FILE* source,
 
             else if (isExternDirective(word)) {
                 readLabelName(labelName, &i, line);
-                addExternLabel(labelName, symbolTable, externalSymbols);
+                addExternLabel(labelName, symbolTable);
             }
 
             else if (isEntryDirective(word)) continue;
@@ -67,9 +67,8 @@ FILE* phase1(FILE* source,
                 if (labelFlag)
                     addInstructionLabel(labelName, symbolTable);
 
-                addInstruction(NULL, NULL, 0, NULL, NULL)
+                addInstruction(line, &i, r, instructionArray, symbolTable, externalSymbols);
             }
-
         }
 
         lineCount++;
