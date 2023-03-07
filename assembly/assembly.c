@@ -14,9 +14,9 @@ int dataCounter=0, instructionCounter=0;
 FILE* assembly(FILE* source, const char* oldFileName) {
     char newFileName[MAX_FILE_NAME];
     FILE* objectFile, *postPhase1;
-    Cell memoryImage[MAX_DATA + MAX_INSTRUCTIONS + RESERVED_SPACE];
-    Cell dataArray[MAX_DATA];
-    Cell instructionArray[MAX_INSTRUCTIONS];
+    Word memoryImage[MAX_DATA + MAX_INSTRUCTIONS + RESERVED_SPACE];
+    Word dataArray[MAX_DATA];
+    Word instructionArray[MAX_INSTRUCTIONS];
 
     Label* symbolTable[MAX_LABELS] = { NULL };
     Label* externalSymbols[MAX_LABELS] = { NULL };

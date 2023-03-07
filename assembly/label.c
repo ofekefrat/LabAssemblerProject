@@ -43,17 +43,27 @@ void addEntry(const char* name, Label** symbolTable, Label** entrySymbols) {
         printError("Label not found for entry directive");
 }
 
+Label* getLabel(const char* name, Label** symbolTable) {
+    int i;
+    for (i=0; i < MAX_LABELS && symbolTable[i] != NULL; i++) {
+        if (!strcmp(symbolTable[i]->name, name)) {
+            return symbolTable[i];
+        }
+    }
+    return NULL;
+}
+
 Label* getNextEmptyLabel(const char* name, Label** symbolTable) {
     int i;
     for (i=0; i < MAX_LABELS && symbolTable[i] != NULL; i++) {
-        if (strcmp("error", name) != 0 && !strcmp(symbolTable[i]->name, name)) {
+        if (!strcmp(symbolTable[i]->name, name)) {
             printError("Duplicate label name");
         }
     }
     return symbolTable[i];
 }
 
-int getLabelName(char* buffer, int* ind, const char* line) {
+int readLabelName(char* buffer, int* ind, const char* line) {
     int i = *ind;
     if (!isalpha(line[i])) {
         printError("first character in label name must be alphabetical");

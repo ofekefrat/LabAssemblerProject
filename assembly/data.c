@@ -1,6 +1,6 @@
 #include "assembly.h"
 
-void addIntArray(char* line, int* ind, Cell* dataArray) {
+void addIntArray(char* line, int* ind, Word* dataArray) {
     int i = *ind;
     int* pInt = NULL;
 
@@ -46,7 +46,7 @@ int verifyComma(const char* line, int* ind) {
     return 0;
 }
 
-void addString(char* line, int* ind, Cell* dataArray) {
+void addString(char* line, int* ind, Word* dataArray) {
     int i = *ind;
     while (i < strlen(line) && line[i] != '\"') i++;
 

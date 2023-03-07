@@ -11,17 +11,23 @@
 #define MAX_DIGITS 666
 #define LABEL_ERROR (-1)
 #define PRE_DEF_OPS 16
-#define OPCODE_POS 6
-#define MAX_STR_LENGTH 666
-#define NO_ADDRESS 404
+#define WORD_LENGTH 14
+#define NUM_OF_REGS 7
+#define OPCODE_IND 6
+#define SOURCE_AM_IND 4
+#define DEST_AM_IND 2
 extern int dataCounter, instructionCounter;
 
 enum opcode {mov, cmp, add, sub, not, clr, lea, inc, dec, jmp, bne,
     red, prn, jsr, rts, stop};
 
-typedef struct Cell {
-    int value : 14;
-}Cell;
+enum AddressingMethod {label=1, jump, reg};
+
+enum LocationType {immediate, ext, reloc};
+
+typedef struct Word {
+    int value : WORD_LENGTH;
+}Word;
 
 typedef struct Label {
     char name[MAX_LABEL_LENGTH];
@@ -30,12 +36,12 @@ typedef struct Label {
 }Label;
 
 FILE* phase1(FILE* source,
-            Cell* dataArray,
-            Cell* instructionArray,
-            Label** symbolTable,
-            Label** externalSymbols,
-            Label** entrySymbols,
-            char** ops);
+             Word* dataArray,
+             Word* instructionArray,
+             Label** symbolTable,
+             Label** externalSymbols,
+             Label** entrySymbols,
+             char** ops);
 
 int hasLabel(const char* line);
 int isDirective(const char* line, int* ind);
@@ -45,13 +51,16 @@ int isExternDirective(const char* word);
 int isEntryDirective(const char* word);
 
 void addInstructionLabel(const char* name, Label** symbolTable);
-void addInstruction(const char* line, int* ind, int opcode, Cell** instructionArray);
-Cell* getSourceOperand(const char* line, int* ind, int opcode, Cell* instruction);
-Cell* getDestOperand(const char* line, int* ind, int opcode, Cell* instruction);
+Label* getLabel(const char* name, Label** symbolTable);
 
-void addIntArray(char* line, int* ind, Cell* dataArray);
-void addString(char* line, int* ind, Cell* dataArray);
-void insertNumber(char* digits, int* j, Cell* dataArray);
+void addInstruction(const char *line, int *ind, int opcode, Word *instructionArray, Label **symbolTable);
+void readNextOperand(const char *line, int *ind, char* operand);
+int stillInWord(const char* line, const int* ind);
+int isRegisterOperand(const char* operand);
+
+void addIntArray(char* line, int* ind, Word* dataArray);
+void addString(char* line, int* ind, Word* dataArray);
+void insertNumber(char* digits, int* j, Word* dataArray);
 void resetDigitArray(char* arr, int* j);
 void readNextNumber(const char* line, int* ind, int* pInt);
 int verifyComma(const char* line, int* ind);
@@ -59,5 +68,5 @@ int verifyComma(const char* line, int* ind);
 void printError(const char* str);
 void skipWhiteSpaces(const char* line, int* ind);
 
-Cell (*opFunc)(const char* line, int* ind);
+Word (*opFunc)(const char* line, int* ind);
 #endif //assembly_h

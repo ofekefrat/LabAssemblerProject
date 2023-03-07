@@ -3,12 +3,12 @@
 int error=0, lineCount=1;
 
 FILE* phase1(FILE* source,
-            Cell* dataArray,
-            Cell* instructionArray,
-            Label** symbolTable,
-            Label** externalSymbols,
-            Label** entrySymbols,
-            char** ops) {
+             Word* dataArray,
+             Word* instructionArray,
+             Label** symbolTable,
+             Label** externalSymbols,
+             Label** entrySymbols,
+             char** ops) {
     int i, j, labelFlag=0, r=0;
     char line[MAX_LINE_LENGTH], labelName[MAX_LABEL_LENGTH], word[MAX_TYPE_LENGTH];
     FILE* output = fopen("pp1.txt", "w+");
@@ -27,7 +27,7 @@ FILE* phase1(FILE* source,
 
         if (hasLabel(line)) {
             labelFlag=1;
-            r = getLabelName(labelName, &i, line);
+            r = readLabelName(labelName, &i, line);
             if (r == LABEL_ERROR) continue;
         }
 
@@ -49,7 +49,7 @@ FILE* phase1(FILE* source,
             }
 
             else if (isExternDirective(word)) {
-                getLabelName(labelName, &i, line);
+                readLabelName(labelName, &i, line);
                 addExternLabel(labelName, symbolTable, externalSymbols);
             }
 
@@ -67,7 +67,7 @@ FILE* phase1(FILE* source,
                 if (labelFlag)
                     addInstructionLabel(labelName, symbolTable);
 
-                addInstruction()
+                addInstruction(NULL, NULL, 0, NULL, NULL)
             }
 
         }
