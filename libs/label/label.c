@@ -1,15 +1,13 @@
-#include "phase1.h"
-//TODO make cells for labels
+#include "label.h"
+
 Label newLabel(const char* name, const char* type, int address) {
 
-//    Label* temp = (Label*) malloc(sizeof(Label));
     Label new;
 
     strcpy(new.name, name);
     strcpy(new.type, type);
     new.value = address;
 
-//    temp = new;
     return new;
 }
 
@@ -60,30 +58,3 @@ Label* getNextEmptyLabel(const char* name, Label** symbolTable) {
     return symbolTable[i];
 }
 
-int readLabelName(char* buffer, int* ind, const char* line) {
-    int i = *ind;
-    if (!isalpha(line[i])) {
-        printError("first character in label name must be alphabetical");
-    }
-    buffer[0] = line[i];
-
-    for (; i < strlen(line) && line[i] != ':'; i++) {
-        if (i < MAX_LABEL_LENGTH) {
-            if (!isalnum(line[i])) {
-                printError("Only digits and alphabetical character allowed in label name");
-                return LABEL_ERROR;
-            }
-            buffer[i] = line[i];
-        }
-    }
-
-    if (strlen(buffer) > MAX_LABEL_LENGTH) {
-        strcpy(buffer, "error");
-    }
-    *ind = i;
-}
-
-void printError(const char* str) {
-    printf("in line %d: %s\n", lineCount, str);
-    if (!error) error=1;
-}

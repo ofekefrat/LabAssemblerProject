@@ -1,15 +1,16 @@
-#include "assembly.h"
+#include "instruction.h"
 //TODO Addressing method 2, TESTING
+
 void addInstruction(const char *line, int *ind, int opcode, Word *instructionArray, Label **symbolTable, Label** externalSymbols) {
     Word sourceOperand, destOperand, instruction;
-    char operand1[MAX_LABELS], operand2[MAX_LABELS];
+    char operand1[MAX_LABEL_LENGTH], operand2[MAX_LABEL_LENGTH];
     int i = *ind, regSrc = reg << SOURCE_AM_IND , regDest = reg << DEST_AM_IND;
 
     sourceOperand.value = INST_ERROR;
     destOperand.value = INST_ERROR;
 
-    memset(operand1, 0, MAX_LABELS);
-    memset(operand2, 0, MAX_LABELS);
+    memset(operand1, 0, MAX_LABEL_LENGTH);
+    memset(operand2, 0, MAX_LABEL_LENGTH);
 
     instruction.value = opcode << OPCODE_IND;
 
@@ -176,25 +177,6 @@ Word getDestOperand(const char* operand, int opcode, Word instruction, Label** s
     return destOperand;
 }
 
-int isRegisterOperand(const char* operand) {
-    int res;
-    if (strlen(operand) > 2 && operand[0] == 'r'/*&& isdigit(operand[1])*/) {
-        res = operand[1] - '0';
-        if (res <= NUM_OF_REGS) return 1;
-    }
-    return 0;
-}
-
-void readNextOperand(const char *line, int *ind, char* operand) {
-    int i = *ind, j=0;
-    skipWhiteSpaces(line, &i);
-    while (stillInWord(line, &i) && line[i] != ',') operand[j++] = line[i++];
-    *ind = i;
-}
-
-int stillInWord(const char* line, const int* ind) {
-    return (*ind < strlen(line) && line[*ind] != ' ' && line[*ind] != '\t' && line[*ind] != '\n');
-}
 
 
 

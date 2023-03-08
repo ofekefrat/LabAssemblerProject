@@ -2,7 +2,7 @@
 
 FILE* preAssemble(FILE* source, const char* oldFileName) {
 
-    int r;
+    Node* r;
     char line[MAX_LINE_LENGTH];
     char newFileName[MAX_FILE_NAME];
     List macros = { NULL, NULL };
@@ -19,7 +19,7 @@ FILE* preAssemble(FILE* source, const char* oldFileName) {
         }
 
         else if ( (r = isSpread(macros, line)) ) {
-            spreadMacro(output, macros, r-1);
+            spreadMacro(output, r);
         }
         else {
             fputs(line, output);
@@ -31,30 +31,8 @@ FILE* preAssemble(FILE* source, const char* oldFileName) {
     return output;
 }
 
-int isDef(const char* line) {
-    if (strlen(line) < 4 || line[0] != 'm' || line[1] != 'c' || line[2] != 'r' || line[3] != ' ')
-        return 0;
-
-    return 1;
-}
-
-//TODO Verify & allow macro spreads inside labels
-Node* isSpread(List macros, const char* line) {
-
-    Node* currentNode = macros.head;
-    while (currentNode != NULL) {
-        if (!strcmp(currentNode->item.macro.name, line))
-            return currentNode;
-    }
-
-    return NULL;
-}
 
 void freeUnusedMemory(List macros) {
-    int i;
-    for (i=0; macros[i] != NULL && i < MAX_MACROS; i++) {
-        free(macros[i]);
-    }
 }
 
 void printFileContent(FILE* file) {

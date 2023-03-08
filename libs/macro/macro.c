@@ -1,4 +1,4 @@
-#include "pre.h"
+#include "macro.h"
 
 Macro newMacro(const char* name) {
     Macro new;
@@ -6,19 +6,24 @@ Macro newMacro(const char* name) {
 
     return new;
 }
-//TODO No nested macro definitions
-//TODO Macros can't be named after native operation names
 //TODO Make sure macro definitions can be inside labels in the manual
 
 /* It's safe to assume "endmcr" will be present */
 void addMacroToTable(FILE* input, const char* defLine, List macros) {
-
+    int i;
     char line[MAX_LINE_LENGTH];
     char name[MAX_MACRO_NAME_LENGTH];
     Item tempItem;
     Node* currentNode = macros.head;
 
     strcpy(name, defLine+4);
+
+    for (i=0; i < sizeof(ops); i++) {
+        if (!strcmp(name, ops[i])) {
+            printError("Macro has the same name as one of the predefined operation names");
+            return;
+        }
+    }
 
     while (currentNode != NULL) {
         if (!strcmp(currentNode->item.macro.name, name)) { /* checking if the names ARE equal */

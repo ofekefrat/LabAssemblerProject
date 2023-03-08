@@ -1,4 +1,4 @@
-#include "assembly.h"
+#include "data.h"
 
 void addIntArray(char* line, int* ind, Word* dataArray) {
     int i = *ind;

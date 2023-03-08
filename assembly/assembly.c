@@ -19,8 +19,6 @@ FILE* assembly(FILE* source, const char* oldFileName) {
     List externalSymbols = { NULL, NULL };
     List entrySymbols = { NULL, NULL };
 
-    char* ops[] = {"mov", "cmp", "add", "sub", "not", "clr", "lea", "inc", "dec", "jmp", "bne",
-                                           "red", "prn", "jsr", "rts", "stop"};
 
 
     sprintf(newFileName, "%s.ob", oldFileName);
@@ -41,4 +39,9 @@ FILE* assembly(FILE* source, const char* oldFileName) {
 //           entrySymbols);
 
     objectFile = fopen(newFileName, "w");
+
+    if (error) {
+        printf("Errors found, stopping..\n");
+        exit(1);
+    }
 }

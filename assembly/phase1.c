@@ -74,54 +74,5 @@ FILE* phase1(FILE* source,
         lineCount++;
     }
 
-    if (error) {
-        printf("Errors found, stopping..\n");
-        exit(1);
-    }
-
     return output;
-}
-
-int hasLabel(const char* line) {
-    int i;
-    for (i=0; i < strlen(line); i++) {
-        if (line[i] == ':') {
-            if (i <= MAX_LABEL_LENGTH) return 1;
-            printError("Label name is too long");
-            return 0;
-        }
-    }
-    return 0;
-}
-
-int isDirective(const char* line, int* ind) {
-    int i;
-    skipWhiteSpaces(line, ind);
-    i = *ind;
-
-    if (line[i] == '.') {
-        *ind = ++i;
-        return 1;
-    }
-    return 0;
-}
-
-int isDataDirective(const char* word) {
-    return (!strcmp(word, "data"));
-}
-int isStringDirective(const char* word) { return (!strcmp(word, "string")); }
-int isExternDirective(const char* word) { return (!strcmp(word, "extern")); }
-int isEntryDirective(const char* word) { return (!strcmp(word, "entry")); }
-void skipWhiteSpaces(const char* line, int* ind) {
-    int i = *ind;
-    while (i < strlen(line) && (line[i] == ' ' || line[i] == '\t')) i++;
-    *ind = i;
-}
-int isInstruction(const char* word, char** ops) {
-    int i;
-
-    for (i=0; i < sizeof(ops); i++)
-        if (!strcmp(word, ops[i])) return i+1;
-
-    return 0;
 }
