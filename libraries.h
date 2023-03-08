@@ -5,9 +5,11 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include "linked_list.h"
 
 #define MAX_LINE_LENGTH 81
 #define MAX_FILE_NAME 666
-#define CELL_SIZE 14
+
+extern int error;
 
 #endif

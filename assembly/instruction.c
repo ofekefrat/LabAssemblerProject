@@ -1,5 +1,5 @@
 #include "assembly.h"
-//TODO Addressing method 2, TESTINGGGGGGGGGGGGG
+//TODO Addressing method 2, TESTING
 void addInstruction(const char *line, int *ind, int opcode, Word *instructionArray, Label **symbolTable, Label** externalSymbols) {
     Word sourceOperand, destOperand, instruction;
     char operand1[MAX_LABELS], operand2[MAX_LABELS];
@@ -44,7 +44,7 @@ void addInstruction(const char *line, int *ind, int opcode, Word *instructionArr
     }
 
     *ind = i;
-
+    //TODO fill in blank labels
     instructionArray[instructionCounter++] = instruction;
     if (twoOps(opcode)) {
         if (sourceOperand.value == INST_ERROR) return;
@@ -56,6 +56,8 @@ void addInstruction(const char *line, int *ind, int opcode, Word *instructionArr
         if (destOperand.value == INST_ERROR) return;
         instructionArray[instructionCounter++] = destOperand;
     }
+
+
 
 }
 

@@ -2,21 +2,21 @@
 #define assembly_h
 
 #include "../libraries.h"
+#define WORD_LENGTH 14
 #define MAX_LABEL_LENGTH 30 /* not including colon */
 #define MAX_TYPE_LENGTH 9
 #define MAX_DATA 666
-#define MAX_LABELS 666
 #define MAX_INSTRUCTIONS 666
 #define RESERVED_SPACE 100
 #define MAX_DIGITS 666
 #define LABEL_ERROR (-1)
 #define PRE_DEF_OPS 16
-#define WORD_LENGTH 14
 #define NUM_OF_REGS 7
 #define OPCODE_IND 6
 #define SOURCE_AM_IND 4
 #define DEST_AM_IND 2
 #define INST_ERROR (1 << (WORD_LENGTH-1))
+
 extern int dataCounter, instructionCounter;
 
 enum opcode {mov, cmp, add, sub, not, clr, lea, inc, dec, jmp, bne,

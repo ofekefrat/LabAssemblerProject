@@ -9,7 +9,7 @@ add_subdirectory(assembly)
 add_executable(main
         main.c
         main.h
-)
+        linked_list.h linked_list.c)
 
 target_link_libraries(main
         pre

@@ -12,7 +12,6 @@ void addEntry(const char* name, Label** symbolTable, Label** entrySymbols);
 int isInstruction(const char* word, char** ops);
 
 
-extern int error;
 extern int lineCount;
 
 #endif //phase_1

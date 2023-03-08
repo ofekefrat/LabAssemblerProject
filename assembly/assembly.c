@@ -15,10 +15,11 @@ FILE* assembly(FILE* source, const char* oldFileName) {
     Word dataArray[MAX_DATA];
     Word instructionArray[MAX_INSTRUCTIONS];
 
-    Label* symbolTable[MAX_LABELS] = { NULL };
-    Label* externalSymbols[MAX_LABELS] = { NULL };
-    Label* entrySymbols[MAX_LABELS] = { NULL };
-    char* ops[PRE_DEF_OPS + MAX_LABELS] = {"mov", "cmp", "add", "sub", "not", "clr", "lea", "inc", "dec", "jmp", "bne",
+    List symbolTable = { NULL, NULL };
+    List externalSymbols = { NULL, NULL };
+    List entrySymbols = { NULL, NULL };
+
+    char* ops[] = {"mov", "cmp", "add", "sub", "not", "clr", "lea", "inc", "dec", "jmp", "bne",
                                            "red", "prn", "jsr", "rts", "stop"};
 
 

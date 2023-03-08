@@ -9,17 +9,16 @@
 
 typedef struct Macro {
     char name[MAX_MACRO_NAME_LENGTH];
-    char lines[MAX_MACRO_LINES][MAX_LINE_LENGTH];
-    int lineCount;
+    List lines;
 }Macro;
 
 FILE* preAssemble(FILE* source, const char* oldFileName);
 void printFileContent(FILE*);
-void addMacroToTable(FILE*, const char*, Macro**);
-void spreadMacro(FILE*, Macro**, int);
+void addMacroToTable(FILE*, const char*, List);
+void spreadMacro(FILE*, Node* macro);
 //void writeLine(FILE*, const char*);
-void freeUnusedMemory(Macro**);
-int isSpread(Macro**, const char*);
+void freeUnusedMemory(List);
+Node* isSpread(List, const char*);
 int isDef(const char*);
 
 #endif //preassemble_h

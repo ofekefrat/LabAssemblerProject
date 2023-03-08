@@ -1,6 +1,6 @@
 #include "phase1.h"
 
-int error=0, lineCount=1;
+int lineCount=1;
 
 FILE* phase1(FILE* source,
              Word* dataArray,
