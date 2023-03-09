@@ -16,7 +16,7 @@ int isUniqueLabelName(const char* name, List symbolTable) {
     char* ops[] = OPCODES;
     Node* currentNode = symbolTable.head;
 
-    for (i=0; i < sizeof(ops); i++)
+    for (i=0; i < NUM_OF_OPCODES; i++)
         if (!strcmp(name, ops[i])) {
             printError("Unable to name label after existing operation name");
             return 0;

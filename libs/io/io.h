@@ -3,6 +3,7 @@
 
 #include "../../root.h"
 #define RESERVED_SPACE 100
+#define NUM_OF_OPCODES 16
 
 Node* isSpread(List, const char*, char* buff);
 int isDef(const char*);
@@ -21,7 +22,7 @@ void readNextOperand(const char *line, int *ind, char* operand);
 int stillInWord(const char* line, const int* ind);
 int isRegisterOperand(const char* operand);
 
-void readNextNumber(const char* line, int* ind, int* pInt);
+int readNextNumber(const char* line, int* ind);
 int verifyComma(const char* line, int* ind);
 
 void printError(const char* str);

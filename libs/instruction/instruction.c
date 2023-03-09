@@ -177,12 +177,11 @@ Word getDestOperand(const char* operand, int opcode, Word* instruction) {
 
 Word immediateOp(const char* operand, int* ind) {
     Word sourceOperand = { INST_ERROR };
-    int* pInt = NULL;
-    readNextNumber(operand, ind, pInt);
-    if (pInt != NULL) {
-        if (*pInt < (1 << (WORD_LENGTH-2))) {
+    int num = readNextNumber(operand, ind);
+    if (num != INT_MIN) {
+        if (num < (1 << (WORD_LENGTH-2))) {
             sourceOperand.value = immediate;
-            sourceOperand.value |= *pInt;
+            sourceOperand.value |= num;
         }
         else printError("number is too big");
     }

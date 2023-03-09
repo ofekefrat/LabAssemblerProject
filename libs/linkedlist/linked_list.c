@@ -11,7 +11,7 @@ void addToList(List* pList, Node* pNode) {
     if (pList->head == NULL)
         pList->head = pNode;
 
-    if (pList->tail != NULL)
+    else if (pList->tail != NULL)
         pList->tail->next = pNode;
 
     pList->tail = pNode;

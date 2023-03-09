@@ -33,7 +33,7 @@ int isEntryDirective(const char* word) { return (!strcmp(word, "entry")); }
 
 void skipWhiteSpaces(const char* line, int* ind) {
     int i = *ind;
-    while (i < strlen(line) && (line[i] == ' ' || line[i] == '\t')) i++;
+    while (line[i] != '\n' && (line[i] == ' ' || line[i] == '\t')) i++;
     *ind = i;
 }
 
@@ -42,8 +42,7 @@ int skipLabel(const char* line, int* ind) {
     while (line[i] != '\n' && line[i] != ':') i++;
 
     if (line[i] != '\n') {
-        i++;
-        *ind = i;
+        *ind = ++i;
         return 1;
     }
     *ind = i;
@@ -53,7 +52,7 @@ int skipLabel(const char* line, int* ind) {
 int isInstruction(const char* word) {
     int i;
     char* ops[] = OPCODES;
-    for (i=0; i < sizeof(ops); i++)
+    for (i=0; i < NUM_OF_OPCODES; i++)
         if (!strcmp(word, ops[i])) return i+1;
 
     return 0;
@@ -67,7 +66,7 @@ int readLabelName(char* buffer, int* ind, const char* line) {
         printError("first character in label name must be alphabetical");
         return LABEL_ERROR;
     }
-    buffer[j++] = line[i];
+    buffer[j++] = line[i++];
 
     while (j < MAX_LABEL_LENGTH && i < strlen(line) && line[i] != ':') {
         if (!isalnum(line[i])) {
@@ -77,6 +76,7 @@ int readLabelName(char* buffer, int* ind, const char* line) {
 
         buffer[j++] = line[i++];
     }
+    skipLabel(line, &i);
 
     *ind = i;
     return 1;
@@ -106,6 +106,7 @@ Node* isSpread(List macros, const char* line, char* buffer) {
     while (currentNode != NULL) {
         if (!strcmp(currentNode->item.macro.name, line+i))
             return currentNode;
+        currentNode = currentNode->next;
     }
 
     return NULL;
@@ -162,8 +163,8 @@ void reverseWord(char* buff) {
     strcpy(temp, buff);
     memset(buff, 0, WORD_LENGTH);
 
-    for (i=0; temp[WORD_LENGTH-i] != 0; i++) {
-        buff[i] = temp[WORD_LENGTH-i];
+    for (i=0; temp[WORD_LENGTH-i-1] != 0; i++) {
+        buff[i] = temp[WORD_LENGTH-i-1];
     }
 }
 

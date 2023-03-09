@@ -3,6 +3,8 @@
 Macro newMacro(const char* name) {
     Macro new;
     strcpy(new.name, name);
+    new.lines.head = NULL;
+    new.lines.tail = NULL;
 
     return new;
 }
@@ -19,7 +21,7 @@ void addMacroToTable(FILE* input, const char* defLine, List* macros) {
 
     strcpy(name, defLine+4);
 
-    for (i=0; i < sizeof(ops); i++) {
+    for (i=0; i < NUM_OF_OPCODES; i++) {
         if (!strcmp(name, ops[i])) {
             printError("Macro has the same name as one of the predefined operation names");
             return;

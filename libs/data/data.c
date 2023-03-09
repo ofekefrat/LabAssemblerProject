@@ -2,14 +2,15 @@
 
 void addIntArray(char* line, int* ind, Word* dataArray) {
     int i = *ind;
-    int* pInt = NULL;
+    int num;
 
-    while (line[i] != '\n') {
-        readNextNumber(line, &i, pInt);
-        verifyComma(line, &i);
-        if (pInt != NULL) {
-            if (*pInt < (1 << 15))
-                dataArray[dataCounter++].value = *pInt;
+    while (line[i] != '\n' && i+1 < strlen(line)) {
+        num = readNextNumber(line, &i);
+        skipWhiteSpaces(line, &i);
+        if (line[i] != '\n' && i+1 < strlen(line)) verifyComma(line, &i);
+        if (num != INT_MIN) {
+            if (num < (1 << 15))
+                dataArray[dataCounter++].value = num;
             else
                 printError("number is too big");
         }
@@ -18,7 +19,7 @@ void addIntArray(char* line, int* ind, Word* dataArray) {
     *ind = i;
 }
 
-void readNextNumber(const char* line, int* ind, int* pInt) {
+int readNextNumber(const char* line, int* ind) {
     char digits[MAX_DIGITS];
     int i = *ind, j=0;
 
@@ -29,8 +30,12 @@ void readNextNumber(const char* line, int* ind, int* pInt) {
     while (i < strlen(line) && isdigit(line[i])) digits[j++] = line[i++];
     *ind = i;
 
-    if (!isdigit(digits[0])) printError("No digits found when expecting number");
-    else *pInt = atoi(digits);
+    if (!isdigit(digits[0])) {
+        printError("No digits found when expecting number");
+        return INT_MIN;
+    }
+    else
+        return atoi(digits);
 }
 
 int verifyComma(const char* line, int* ind) {

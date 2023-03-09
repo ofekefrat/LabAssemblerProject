@@ -13,6 +13,7 @@ void phase2(FILE* source,
     int lineCount=0;
 
     instructionCounter=0;
+    rewind(source);
 
     while (fgets(line, MAX_LINE_LENGTH, source)) {
         skipWhiteSpaces(line, &i);

@@ -7,7 +7,6 @@ int main(int argc, char** argv) {
     int fileCount;
     FILE* source, *am, *ob;
     char fileName[MAX_FILE_NAME];
-    printf("Program starts\n");
 
     if (argc >= 2) printf("File name: %s\n", argv[1]);
     else printf("Problem with argument\n");
@@ -18,6 +17,7 @@ int main(int argc, char** argv) {
         if (source == NULL) printf("File pointer is null\n");
 
         am = preAssemble(source, argv[fileCount]);
+        printFileContent(am);
         fclose(source);
 
         compile(am, argv[fileCount]);

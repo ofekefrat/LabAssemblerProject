@@ -16,10 +16,8 @@ void compile(FILE* source, const char* oldFileName) {
     char newFileName[MAX_FILE_NAME];
     FILE* objectFile;
 //    Word memoryImage[MAX_MEMORY];
-    Word dataArray[MAX_DATA];
-    Word instructionArray[MAX_INSTRUCTIONS];
-
-    memset(instructionArray, INST_ERROR, MAX_INSTRUCTIONS);
+    Word dataArray[MAX_DATA] = { 0 };
+    Word instructionArray[MAX_INSTRUCTIONS] = { INST_ERROR };
 
     List symbolTable = { NULL, NULL };
     List externalSymbols = { NULL, NULL };
@@ -53,7 +51,7 @@ void compile(FILE* source, const char* oldFileName) {
 
     updateMemoryImage(instructionArray);
 
-    objectFile = fopen(newFileName, "w");
+    objectFile = fopen(newFileName, "w+");
     makeObFile(objectFile, instructionArray, dataArray);
     printFileContent(objectFile);
 
