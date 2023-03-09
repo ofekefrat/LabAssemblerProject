@@ -6,15 +6,16 @@ Macro newMacro(const char* name) {
 
     return new;
 }
-//TODO Make sure macro definitions can be inside labels in the manual
 
 /* It's safe to assume "endmcr" will be present */
-void addMacroToTable(FILE* input, const char* defLine, List macros) {
+void addMacroToTable(FILE* input, const char* defLine, List* macros) {
     int i;
     char line[MAX_LINE_LENGTH];
     char name[MAX_MACRO_NAME_LENGTH];
     Item tempItem;
-    Node* currentNode = macros.head;
+
+    char* ops[] = OPCODES;
+    Node* currentNode = macros->head;
 
     strcpy(name, defLine+4);
 
@@ -35,18 +36,25 @@ void addMacroToTable(FILE* input, const char* defLine, List macros) {
     tempItem.macro = newMacro(name);
     addToList(macros, newNode(tempItem));
 
-    while (fgets(line, MAX_LINE_LENGTH, input)) { // fgets, not endmcr && not EOF
+    while (fgets(line, MAX_LINE_LENGTH, input)) {
         if (!strcmp(line, "endmcr\n")) break;
         strcpy(tempItem.line, line);
-        addToList( macros.tail->item.macro.lines , tempItem);
+        addToList( &macros->tail->item.macro.lines, newNode(tempItem) );
     }
 }
 
-void spreadMacro(FILE* output, Node* macro) {
+void spreadMacro(FILE* output, Node* macro, const char* labelName) {
+    char newLine[MAX_LINE_LENGTH];
+    Node* currentLine = macro->item.macro.lines.head;
 
-    Node* currentLine = macro->item.macro.line;
-    while (currentLine != NULL) {
-        fputs(currentLine->item.line, output);
-        currentLine = currentLine->next;
+    if (labelName[0] != 0) {
+        sprintf(newLine, "%s: %s\n", labelName, currentLine->item.line);
+        fputs(newLine, output);
+    }
+    else {
+        while (currentLine != NULL) {
+            fputs(currentLine->item.line, output);
+            currentLine = currentLine->next;
+        }
     }
 }

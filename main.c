@@ -20,7 +20,7 @@ int main(int argc, char** argv) {
         am = preAssemble(source, argv[fileCount]);
         fclose(source);
 
-
+        compile(am, argv[fileCount]);
     }
 
     return 0;

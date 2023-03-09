@@ -7,21 +7,30 @@
 #define OPCODE_IND 6
 #define SOURCE_AM_IND 4
 #define DEST_AM_IND 2
-#define INST_ERROR (1 << (WORD_LENGTH-1))
-
-const char* ops[] = {"mov", "cmp", "add", "sub", "not", "clr", "lea", "inc", "dec", "jmp", "bne",
-               "red", "prn", "jsr", "rts", "stop"};
+#define INST_ERROR 3
+#define MISSING_LABEL (7 >> 1)
+#define OPCODES {"mov", "cmp", "add", "sub", "not", "clr", "lea", "inc", "dec", "jmp", "bne", \
+                    "red", "prn", "jsr", "rts", "stop"}
 
 enum opcode {mov, cmp, add, sub, not, clr, lea, inc, dec, jmp, bne,
     red, prn, jsr, rts, stop};
 
 enum AddressingMethod {label=1, jump, reg};
 
-enum LocationType {immediate, ext, reloc};
+enum LocationType {immediate, ext, reloc}; /*A,R,E*/
 
+void addInstruction(const char *line, int *ind, int opcode, Word *instructionArray);
+Word getSourceOperand(const char* operand, int opcode, Word* instruction);
+Word getDestOperand(const char* operand, int opcode, Word* instruction);
+void completeInstruction(const char* line,
+                         int* ind,
+                         Word* instructionArray,
+                         List* symbolTable,
+                         List* externalSymbols);
 
-void addInstruction(const char *line, int *ind, int opcode, Word *instructionArray, Label **symbolTable, Label** externalSymbols);
-Word getSourceOperand(const char* operand, int opcode, Word instruction, Label** symbolTable, Label** externalSymbols);
+Word labelOp(const char* operand, List* symbolTable, List* externalSymbols);
+Word immediateOp(const char* operand, int* ind);
 int twoOps(int opcode);
+int labelsInInstruction(Word instruction);
 
 #endif //instruction_h

@@ -33,12 +33,11 @@ add_executable(main
         assembly/assembly.c
         assembly/assembly.h
 
-        assembly/phase1.h
         assembly/phase1.c
 
         pre/pre.h
         pre/pre.c
-        libs/datatypes.h)
+        libs/data_types.h assembly/phase2.c)
 
 #target_link_libraries(main
 #        pre

@@ -7,12 +7,12 @@ Node* newNode(Item item) {
     return temp;
 }
 
-void addToList(List list, Node* node) {
-    if (list.head == NULL)
-        list.head = node;
+void addToList(List* pList, Node* pNode) {
+    if (pList->head == NULL)
+        pList->head = pNode;
 
-    if (list.tail != NULL)
-        list.tail->next = node;
+    if (pList->tail != NULL)
+        pList->tail->next = pNode;
 
-    list.tail = node;
+    pList->tail = pNode;
 }

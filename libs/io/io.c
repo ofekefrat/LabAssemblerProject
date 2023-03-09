@@ -1,4 +1,5 @@
 #include "io.h"
+extern int lineCount;
 
 int hasLabel(const char* line) {
     int i;
@@ -14,7 +15,6 @@ int hasLabel(const char* line) {
 
 int isDirective(const char* line, int* ind) {
     int i;
-    skipWhiteSpaces(line, ind);
     i = *ind;
 
     if (line[i] == '.') {
@@ -37,9 +37,22 @@ void skipWhiteSpaces(const char* line, int* ind) {
     *ind = i;
 }
 
-int isInstruction(const char* word, char** ops) {
-    int i;
+int skipLabel(const char* line, int* ind) {
+    int i = *ind;
+    while (line[i] != '\n' && line[i] != ':') i++;
 
+    if (line[i] != '\n') {
+        i++;
+        *ind = i;
+        return 1;
+    }
+    *ind = i;
+    return 0;
+}
+
+int isInstruction(const char* word) {
+    int i;
+    char* ops[] = OPCODES;
     for (i=0; i < sizeof(ops); i++)
         if (!strcmp(word, ops[i])) return i+1;
 
@@ -47,26 +60,26 @@ int isInstruction(const char* word, char** ops) {
 }
 
 int readLabelName(char* buffer, int* ind, const char* line) {
-    int i = *ind;
+    int i = *ind, j=0;
+
+    skipWhiteSpaces(line, &i);
     if (!isalpha(line[i])) {
         printError("first character in label name must be alphabetical");
+        return LABEL_ERROR;
     }
-    buffer[0] = line[i];
+    buffer[j++] = line[i];
 
-    for (; i < strlen(line) && line[i] != ':'; i++) {
-        if (i < MAX_LABEL_LENGTH) {
-            if (!isalnum(line[i])) {
-                printError("Only digits and alphabetical character allowed in label name");
-                return LABEL_ERROR;
-            }
-            buffer[i] = line[i];
+    while (j < MAX_LABEL_LENGTH && i < strlen(line) && line[i] != ':') {
+        if (!isalnum(line[i])) {
+            printError("Only digits and alphabetical characters allowed in label name");
+            return LABEL_ERROR;
         }
+
+        buffer[j++] = line[i++];
     }
 
-    if (strlen(buffer) > MAX_LABEL_LENGTH) {
-        strcpy(buffer, "error");
-    }
     *ind = i;
+    return 1;
 }
 
 void printError(const char* str) {
@@ -75,18 +88,23 @@ void printError(const char* str) {
 }
 
 int isDef(const char* line) {
+
     if (strlen(line) < 4 || line[0] != 'm' || line[1] != 'c' || line[2] != 'r' || line[3] != ' ')
         return 0;
 
     return 1;
 }
 
-//TODO Verify & allow macro spreads inside labels
-Node* isSpread(List macros, const char* line) {
+Node* isSpread(List macros, const char* line, char* buffer) {
+    int i=0;
+    if (hasLabel(line)) {
+        readLabelName(buffer, &i, line);
+    }
 
+    skipWhiteSpaces(line, &i);
     Node* currentNode = macros.head;
     while (currentNode != NULL) {
-        if (!strcmp(currentNode->item.macro.name, line))
+        if (!strcmp(currentNode->item.macro.name, line+i))
             return currentNode;
     }
 
@@ -96,7 +114,10 @@ int isRegisterOperand(const char* operand) {
     int res;
     if (strlen(operand) > 2 && operand[0] == 'r'/*&& isdigit(operand[1])*/) {
         res = operand[1] - '0';
-        if (res <= NUM_OF_REGS) return 1;
+        if (res <= NUM_OF_REGS)
+            return 1;
+        else {
+        }
     }
     return 0;
 }
@@ -109,5 +130,57 @@ void readNextOperand(const char *line, int *ind, char* operand) {
 }
 
 int stillInWord(const char* line, const int* ind) {
-    return (*ind < strlen(line) && line[*ind] != ' ' && line[*ind] != '\t' && line[*ind] != '\n');
+    return (line[*ind] != '\n' && line[*ind] != ' ' && line[*ind] != '\t');
+}
+
+void readNextWord(char* buffer, const char* line, int* ind) {
+    int i = *ind, j=0;
+    while (j < MAX_TYPE_LENGTH && stillInWord(line, &i)) {
+        buffer[j++] = line[i++];
+    }
+    *ind = i;
+}
+
+
+void makeObLine(Word word, int i, char* newLine) {
+    char address[4];
+    char value[WORD_LENGTH];
+
+    sprintf(address, "0%d", i+RESERVED_SPACE);
+
+    binTranslator(word.value, value);
+    reverseWord(value);
+
+    sprintf(newLine, "%s\t%s\n", address, value);
+}
+
+void reverseWord(char* buff) {
+    int i;
+    char temp[WORD_LENGTH];
+    memset(temp, 0, WORD_LENGTH);
+
+    strcpy(temp, buff);
+    memset(buff, 0, WORD_LENGTH);
+
+    for (i=0; temp[WORD_LENGTH-i] != 0; i++) {
+        buff[i] = temp[WORD_LENGTH-i];
+    }
+}
+
+void binTranslator(unsigned int num, char* buff) {
+    int i=0;
+    while (i <= WORD_LENGTH-1) { /* printing base-2 (binary) representation */
+        if (num & (1 << (WORD_LENGTH-1-i)))
+            buff[i++] = '/';
+        else
+            buff[i++] = '.';
+    }
+}
+
+void printFileContent(FILE* file) {
+    char line[MAX_LINE_LENGTH];
+    rewind(file);
+    while (fgets(line, MAX_LINE_LENGTH, file)) { // fgets, not EOF
+        printf("%s", line);
+    }
 }

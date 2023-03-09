@@ -2,18 +2,22 @@
 #define assembly_h
 
 #include "../root.h"
-#define RESERVED_SPACE 100
+#define MAX_MEMORY 255
 
 
-FILE* phase1(FILE* source,
-             Word* dataArray,
-             Word* instructionArray,
-             Label** symbolTable,
-             Label** externalSymbols,
-             Label** entrySymbols,
-             char** ops);
+void compile(FILE* source, const char* oldFileName);
+void phase1(FILE* source,
+            Word* dataArray,
+            Word* instructionArray,
+            List* symbolTable);
 
+void phase2(FILE* source,
+            Word* instructionArray,
+            List* symbolTable,
+            List* externalSymbols,
+            List* entrySymbols);
 
-void insertNumber(char* digits, int* j, Word* dataArray);
-void resetDigitArray(char* arr, int* j);
+void updateDataAddresses(List* symbolTable);
+void updateMemoryImage(Word* instructionArray);
+
 #endif //assembly_h

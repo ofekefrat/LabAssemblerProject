@@ -2,46 +2,107 @@
 
 // ERRORS:
 //TODO confusion about cell size
-//TODO unrecognized action
-//TODO oger lo kayam
-//TODO labels are defined no more than once
+//TODO negative numbers
+//TODO free allocated memory
+
+// UNLESS THERE'S AN ERROR:
+//TODO Make .ext file
+//TODO Make .ent file
+
 
 int dataCounter=0, instructionCounter=0;
 
-FILE* assembly(FILE* source, const char* oldFileName) {
+void compile(FILE* source, const char* oldFileName) {
     char newFileName[MAX_FILE_NAME];
-    FILE* objectFile, *postPhase1;
-    Word memoryImage[MAX_DATA + MAX_INSTRUCTIONS + RESERVED_SPACE];
+    FILE* objectFile;
+//    Word memoryImage[MAX_MEMORY];
     Word dataArray[MAX_DATA];
     Word instructionArray[MAX_INSTRUCTIONS];
+
+    memset(instructionArray, INST_ERROR, MAX_INSTRUCTIONS);
 
     List symbolTable = { NULL, NULL };
     List externalSymbols = { NULL, NULL };
     List entrySymbols = { NULL, NULL };
 
-
-
     sprintf(newFileName, "%s.ob", oldFileName);
 
-    postPhase1 = phase1(source,
+    phase1(source,
            dataArray,
            instructionArray,
-           symbolTable,
-           externalSymbols,
-           entrySymbols,
-           ops);
-
-//    phase2(source,
-//           dataArray,
-//           instructionArray,
-//           symbolTable,
-//           externalSymbols,
-//           entrySymbols);
-
-    objectFile = fopen(newFileName, "w");
+           &symbolTable);
 
     if (error) {
         printf("Errors found, stopping..\n");
-        exit(1);
+        return;
+    }
+
+    updateDataAddresses(&symbolTable);
+
+    phase2(source,
+           instructionArray,
+           &symbolTable,
+           &externalSymbols,
+           &entrySymbols);
+
+    if (error) {
+        printf("Errors found, stopping..\n");
+        return;
+    }
+    fclose(source);
+
+    updateMemoryImage(instructionArray);
+
+    objectFile = fopen(newFileName, "w");
+    makeObFile(objectFile, instructionArray, dataArray);
+    printFileContent(objectFile);
+
+    fclose(objectFile);
+}
+
+void updateDataAddresses(List* symbolTable) {
+    Node* currentLabel = symbolTable->head;
+
+    while (currentLabel) {
+        if (!strcmp(currentLabel->item.label.type, "data")) {
+            currentLabel->item.label.value += instructionCounter;
+        }
+        currentLabel = currentLabel->next;
+    }
+}
+
+void updateMemoryImage(Word* instructionArray) {
+    int i;
+    unsigned int oldAddress;
+    Word* currentInst;
+
+    for (i=0; instructionArray[i].value != INST_ERROR; i++) {
+        currentInst = &instructionArray[i];
+        if ((currentInst->value & label) == label) {
+            oldAddress = ((~3) & currentInst->value) >> 2;
+            currentInst->value = (label | (oldAddress + RESERVED_SPACE));
+        }
+    }
+}
+
+void makeObFile(FILE* file, Word* instructionArray, Word* dataArray) {
+    int i=0, lineC;
+    char newLine[MAX_LINE_LENGTH];
+
+
+    while (instructionArray[i].value != INST_ERROR) {
+        makeObLine(instructionArray[i], i, newLine);
+        fputs(newLine, file);
+        memset(newLine, 0, MAX_LINE_LENGTH);
+        i++;
+    }
+    lineC = i;
+    i=0;
+
+    while (i < dataCounter) {
+        makeObLine(dataArray[i], lineC+i, newLine);
+        fputs(newLine, file);
+        memset(newLine, 0, MAX_LINE_LENGTH);
+        i++;
     }
 }

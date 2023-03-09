@@ -2,24 +2,11 @@
 #define label_h
 
 #include "../../root.h"
-#define MAX_LABEL_LENGTH 30 /* not including colon */
-#define MAX_TYPE_LENGTH 9
 #define LABEL_ERROR (-1)
 
-typedef struct Label {
-    char name[MAX_LABEL_LENGTH];
-    char type[MAX_TYPE_LENGTH];
-    int value;
-}Label;
-
-
-void addInstructionLabel(const char* name, Label** symbolTable);
-Label* getLabel(const char* name, Label** symbolTable);
-Label* getNextEmptyLabel(const char* name, Label** symbolTable);
-void addDataLabel(const char* name, Label** labels);
-void addExternLabel(const char* name, Label** symbolTable);
-void addEntry(const char* name, Label** symbolTable, Label** entrySymbols); //??
-
-
+Label* getLabel(const char* name, List symbolTable);
+void addLabel(const char* name, const char* type, int address, List* labels);
+void addEntry(const char* name, List symbolTable, List* entrySymbols); //??
+int isUniqueLabelName(const char* name, List symbolTable);
 
 #endif //label_h

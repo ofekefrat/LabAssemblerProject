@@ -1,23 +1,15 @@
-#include "phase1.h"
+#include "assembly.h"
 
 int lineCount=1;
 
-FILE* phase1(FILE* source,
-             Word* dataArray,
-             Word* instructionArray,
-             Label** symbolTable,
-             Label** externalSymbols,
-             Label** entrySymbols,
-             char** ops) {
-    int i, j, labelFlag=0, r=0;
-    char line[MAX_LINE_LENGTH], labelName[MAX_LABEL_LENGTH], word[MAX_TYPE_LENGTH];
-    FILE* output = fopen("pp1.txt", "w+");
+void phase1(FILE* source, Word* dataArray, Word* instructionArray, List* symbolTable) {
 
+    int i, labelFlag=0, r;
+    char line[MAX_LINE_LENGTH], labelName[MAX_LABEL_LENGTH], word[MAX_TYPE_LENGTH];
 
     while (fgets(line, MAX_LINE_LENGTH, source)) {
 
         i=0;
-        j=0;
         memset(word, 0, sizeof(word));
         memset(labelName, 0, sizeof(labelName));
 
@@ -29,28 +21,34 @@ FILE* phase1(FILE* source,
             labelFlag=1;
             r = readLabelName(labelName, &i, line);
             if (r == LABEL_ERROR) continue;
+            if (!isUniqueLabelName(labelName, *symbolTable)) {
+                continue;
+            }
         }
+        skipWhiteSpaces(line, &i);
 
         if (isDirective(line, &i)) {
             if (i == strlen(line)) {
                 printError("No directive name entered");
                 continue;
             }
-            while (i < MAX_TYPE_LENGTH && i < strlen(line) && line[i] != ' ' && line[i] != '\t') {
-                word[j++] = line[i++];
-            }
+
+            readNextWord(word, line, &i);
 
             if (isDataDirective(word) || isStringDirective(word)) {
                 if (labelFlag)
-                    addDataLabel(labelName, symbolTable);
+                    addLabel(labelName, "data", dataCounter, symbolTable);
 
-                if (isDataDirective(word)) addIntArray(line, &i, dataArray);
-                else addString(line, &i, dataArray);
+                if (isDataDirective(word))
+                    addIntArray(line, &i, dataArray);
+                else
+                    addString(line, &i, dataArray);
             }
 
             else if (isExternDirective(word)) {
-                readLabelName(labelName, &i, line);
-                addExternLabel(labelName, symbolTable);
+                if (labelFlag) printError("Cannot label a .extern directive");
+                readNextWord(word, line, &i);
+                addLabel(word, "external", 0, symbolTable);
             }
 
             else if (isEntryDirective(word)) continue;
@@ -58,21 +56,17 @@ FILE* phase1(FILE* source,
         }
 
         else { /* line is not a directive */
-            while (i < MAX_TYPE_LENGTH && i < strlen(line) && line[i] != ' ' && line[i] != '\t' && line[i] != '(') {
-                word[j++] = line[i++];
-            }
+            if (labelFlag)
+                addLabel(labelName, "code", instructionCounter, symbolTable);
 
-            if ((r=isInstruction(word, ops))) {
+            readNextWord(word, line, &i);
+            if ((r=isInstruction(word))) {
                 r--;
-                if (labelFlag)
-                    addInstructionLabel(labelName, symbolTable);
-
-                addInstruction(line, &i, r, instructionArray, symbolTable, externalSymbols);
+                addInstruction(line, &i, r, instructionArray);
             }
         }
 
         lineCount++;
     }
-
-    return output;
 }
+

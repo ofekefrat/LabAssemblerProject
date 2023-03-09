@@ -3,42 +3,53 @@
 FILE* preAssemble(FILE* source, const char* oldFileName) {
 
     Node* r;
+    int i;
     char line[MAX_LINE_LENGTH];
     char newFileName[MAX_FILE_NAME];
+    char labelName[MAX_LABEL_LENGTH];
     List macros = { NULL, NULL };
 
     sprintf(newFileName, "%s.am", oldFileName);
 
     FILE* output = fopen(newFileName, "w+");
 
-    while (fgets(line, MAX_LINE_LENGTH, source)) { // fgets, not EOF
+    while (fgets(line, MAX_LINE_LENGTH, source)) {
+        i=0;
+        memset(labelName, 0, MAX_LABEL_LENGTH);
 
-        if (line[0] != ';') continue; // the only case where the line should be completely ignored
+        skipWhiteSpaces(line, &i);
+        if (line[i] != ';') continue; // the only case where the line should be completely ignored
+
         if (isDef(line)) {
-            addMacroToTable(source, line, macros);
+            addMacroToTable(source, line, &macros);
         }
 
-        else if ( (r = isSpread(macros, line)) ) {
-            spreadMacro(output, r);
+        else if ( (r = isSpread(macros, line, labelName)) ) {
+            spreadMacro(output, r, labelName);
         }
         else {
             fputs(line, output);
         }
     }
-    freeUnusedMemory(macros);
+
+    freeMacroList(macros.head);
 
     if (error) exit(1);
     return output;
 }
 
+void freeMacroList(Node* currentNode) {
+    if (currentNode == NULL) return;
 
-void freeUnusedMemory(List macros) {
+    freeMacroList(currentNode->next);
+    freeLinesList(currentNode->item.macro.lines.head);
+    free(currentNode);
 }
 
-void printFileContent(FILE* file) {
-    char line[MAX_LINE_LENGTH];
-    rewind(file);
-    while (fgets(line, MAX_LINE_LENGTH, file)) { // fgets, not EOF
-        printf("%s", line);
-    }
+void freeLinesList(Node* currentLine) {
+    if (currentLine == NULL) return;
+
+    freeLinesList(currentLine->next);
+    free(currentLine);
 }
+

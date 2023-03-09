@@ -4,7 +4,7 @@
 #include "../root.h"
 
 FILE* preAssemble(FILE* source, const char* oldFileName);
-void freeUnusedMemory(List);
-void printFileContent(FILE*);
+void freeLinesList(Node* currentLine);
+void freeMacroList(Node* currentNode);
 
 #endif //pre_h

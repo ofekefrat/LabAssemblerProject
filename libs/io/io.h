@@ -2,14 +2,15 @@
 #define io_h
 
 #include "../../root.h"
+#define RESERVED_SPACE 100
 
-Node* isSpread(List, const char*);
+Node* isSpread(List, const char*, char* buff);
 int isDef(const char*);
 
 int hasLabel(const char* line);
 int readLabelName(char* buffer, int* ind, const char* line);
 
-int isInstruction(const char* word, char** ops);
+int isInstruction(const char* word);
 int isDirective(const char* line, int* ind);
 int isDataDirective(const char* word);
 int isStringDirective(const char* word);
@@ -25,7 +26,13 @@ int verifyComma(const char* line, int* ind);
 
 void printError(const char* str);
 void skipWhiteSpaces(const char* line, int* ind);
+int skipLabel(const char* line, int* ind);
+void readNextWord(char* buffer, const char* line, int* ind);
 
-extern int lineCount;
+void binTranslator(unsigned int num, char* buff);
+void reverseWord(char* buff);
+void makeObFile(FILE* file, Word* instructionArray, Word* dataArray);
+void makeObLine(Word word, int i, char* newLine);
+void printFileContent(FILE*);
 
 #endif //io_h

@@ -3,23 +3,7 @@
 
 #include "../../root.h"
 
-union Item {
-    Macro macro;
-    Label label;
-    char line[MAX_LINE_LENGTH];
-};
-
-struct Node {
-    Item item;
-    struct Node* next;
-};
-
-struct List {
-    Node* head;
-    Node* tail;
-};
-
 Node* newNode(Item item);
-void addToList(List list, Node* node);
+void addToList(List* pList, Node* pNode);
 
 #endif //linked_list_h
