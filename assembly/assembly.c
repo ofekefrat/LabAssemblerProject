@@ -48,8 +48,10 @@ void compile(FILE* source, const char* oldFileName) {
         return;
     }
     fclose(source);
+    freeSymbolTable(symbolTable.head);
 
     updateMemoryImage(instructionArray);
+
 
     objectFile = fopen(newFileName, "w+");
     makeObFile(objectFile, instructionArray, dataArray);
@@ -89,18 +91,25 @@ void makeObFile(FILE* file, Word* instructionArray, Word* dataArray) {
 
 
     while (instructionArray[i].value != INST_ERROR) {
+        memset(newLine, 0, MAX_LINE_LENGTH);
         makeObLine(instructionArray[i], i, newLine);
         fputs(newLine, file);
-        memset(newLine, 0, MAX_LINE_LENGTH);
         i++;
     }
     lineC = i;
     i=0;
 
     while (i < dataCounter) {
+        memset(newLine, 0, MAX_LINE_LENGTH);
         makeObLine(dataArray[i], lineC+i, newLine);
         fputs(newLine, file);
-        memset(newLine, 0, MAX_LINE_LENGTH);
         i++;
     }
+}
+
+void freeSymbolTable(Node* node) {
+    if (node == NULL) return;
+
+    freeSymbolTable(node->next);
+    free(node);
 }

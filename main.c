@@ -5,7 +5,7 @@ int error=0;
 
 int main(int argc, char** argv) {
     int fileCount;
-    FILE* source, *am, *ob;
+    FILE* source, *am;
     char fileName[MAX_FILE_NAME];
 
     if (argc >= 2) printf("File name: %s\n", argv[1]);

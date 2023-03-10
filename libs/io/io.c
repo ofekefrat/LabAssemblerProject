@@ -144,34 +144,37 @@ void readNextWord(char* buffer, const char* line, int* ind) {
 
 
 void makeObLine(Word word, int i, char* newLine) {
-    char address[4];
-    char value[WORD_LENGTH];
+    char address[ADDRESS_PRINT_LENGTH];
+    char value[WORD_STR_LENGTH];
 
-    sprintf(address, "0%d", i+RESERVED_SPACE);
+    memset(address, 0, ADDRESS_PRINT_LENGTH);
+    memset(value, 0, WORD_STR_LENGTH);
+
+    snprintf(address, ADDRESS_PRINT_LENGTH,"0%d", i+RESERVED_SPACE);
 
     binTranslator(word.value, value);
     reverseWord(value);
 
-    sprintf(newLine, "%s\t%s\n", address, value);
+    snprintf(newLine, MAX_LINE_LENGTH, "%s\t%s\n", address, value);
 }
 
 void reverseWord(char* buff) {
     int i;
-    char temp[WORD_LENGTH];
-    memset(temp, 0, WORD_LENGTH);
+    char temp[WORD_STR_LENGTH];
+    memset(temp, 0, WORD_STR_LENGTH);
 
     strcpy(temp, buff);
-    memset(buff, 0, WORD_LENGTH);
+    memset(buff, 0, WORD_STR_LENGTH);
 
-    for (i=0; temp[WORD_LENGTH-i-1] != 0; i++) {
+    for (i=0; i < WORD_LENGTH; i++) {
         buff[i] = temp[WORD_LENGTH-i-1];
     }
 }
 
 void binTranslator(unsigned int num, char* buff) {
     int i=0;
-    while (i <= WORD_LENGTH-1) { /* printing base-2 (binary) representation */
-        if (num & (1 << (WORD_LENGTH-1-i)))
+    while (i < WORD_LENGTH) { /* printing base-2 (binary) representation */
+        if (num & (1 << i))
             buff[i++] = '/';
         else
             buff[i++] = '.';

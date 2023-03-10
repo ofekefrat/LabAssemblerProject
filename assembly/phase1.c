@@ -6,6 +6,7 @@ void phase1(FILE* source, Word* dataArray, Word* instructionArray, List* symbolT
 
     int i, labelFlag=0, r;
     char line[MAX_LINE_LENGTH], labelName[MAX_LABEL_LENGTH], word[MAX_TYPE_LENGTH];
+
     rewind(source);
 
     while (fgets(line, MAX_LINE_LENGTH, source)) {
@@ -69,10 +70,5 @@ void phase1(FILE* source, Word* dataArray, Word* instructionArray, List* symbolT
 
         lineCount++;
     }
-    if (feof(source))
-        printf("eof\n");
-    else
-        printf("error\n");
-    rewind(source);
 }
 

@@ -19,5 +19,6 @@ void phase2(FILE* source,
 
 void updateDataAddresses(List* symbolTable);
 void updateMemoryImage(Word* instructionArray);
+void freeSymbolTable(Node* node);
 
 #endif //assembly_h

@@ -4,6 +4,8 @@
 #include "../../root.h"
 #define RESERVED_SPACE 100
 #define NUM_OF_OPCODES 16
+#define ADDRESS_PRINT_LENGTH 5
+#define WORD_STR_LENGTH (WORD_LENGTH+1)
 
 Node* isSpread(List, const char*, char* buff);
 int isDef(const char*);
