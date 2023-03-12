@@ -97,12 +97,13 @@ int isDef(const char* line) {
 
 Node* isSpread(List macros, const char* line, char* buffer) {
     int i=0;
+    Node* currentNode;
+
     if (hasLabel(line)) {
         readLabelName(buffer, &i, line);
     }
 
     skipWhiteSpaces(line, &i);
-    Node* currentNode;
     currentNode = macros.head;
     while (currentNode != NULL) {
         if (!strcmp(currentNode->item.macro.name, line+i))
