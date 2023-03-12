@@ -2,9 +2,9 @@
 #define data_types_h
 
 #define WORD_LENGTH 14
-#define MAX_LABEL_LENGTH 30 /* not including colon */
-#define MAX_TYPE_LENGTH 9
-#define MAX_MACRO_NAME_LENGTH 74 /* max line length minus "mcr " */
+#define MAX_LABEL_LENGTH (30+1) /* not including colon */
+#define MAX_TYPE_LENGTH (9+1)
+#define MAX_MACRO_NAME_LENGTH (74+1) /* max line length minus "mcr " */
 #define MAX_LINE_LENGTH 81
 
 typedef struct Macro Macro;

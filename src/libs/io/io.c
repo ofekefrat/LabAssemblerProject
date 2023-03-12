@@ -114,31 +114,38 @@ Node* isSpread(List macros, const char* line, char* buffer) {
     return NULL;
 }
 int isRegisterOperand(const char* operand) {
-    int res;
-    if (strlen(operand) > 2 && operand[0] == 'r'/*&& isdigit(operand[1])*/) {
-        res = operand[1] - '0';
-        if (res <= NUM_OF_REGS)
-            return 1;
-        else {
-        }
+    if (strlen(operand) == 2 && operand[0] == 'r' && isdigit(operand[1]))
+        return 1;
+    return 0;
+}
+
+int isJumpOperand(const char* line) {
+    int i=0;
+    while (stillInWord(line, i)) {
+        if (i < MAX_LABEL_LENGTH && line[i] == '(') return 1;
+        i++;
     }
     return 0;
+}
+
+void checkWhiteChar(const char* line, int i) {
+    if (line[i] == ' ' || line[i] == '\t') printError("white characters not allowed inside parameter");
 }
 
 void readNextOperand(const char *line, int *ind, char* operand) {
     int i = *ind, j=0;
     skipWhiteSpaces(line, &i);
-    while (stillInWord(line, &i) && line[i] != ',') operand[j++] = line[i++];
+    while (stillInWord(line, i) && line[i] != ',' && line[i] != ')') operand[j++] = line[i++];
     *ind = i;
 }
 
-int stillInWord(const char* line, const int* ind) {
-    return (line[*ind] != '\n' && line[*ind] != ' ' && line[*ind] != '\t');
+int stillInWord(const char* line, int i) {
+    return (i < strlen(line) && line[i] != '\n' && line[i] != ' ' && line[i] != '\t');
 }
 
 void readNextWord(char* buffer, const char* line, int* ind) {
     int i = *ind, j=0;
-    while (j < MAX_TYPE_LENGTH && stillInWord(line, &i)) {
+    while (j < MAX_TYPE_LENGTH && stillInWord(line, i)) {
         buffer[j++] = line[i++];
     }
     *ind = i;

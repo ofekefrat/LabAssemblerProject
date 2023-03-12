@@ -1,5 +1,8 @@
 #include "data.h"
 
+/* TODO clear up jmp-like operand reception */
+/* TODO */
+
 void addIntArray(char* line, int* ind, Word* dataArray) {
     int i = *ind;
     int num;
@@ -13,6 +16,9 @@ void addIntArray(char* line, int* ind, Word* dataArray) {
                 dataArray[dataCounter++].value = num;
             else
                 printError("number is too big");
+        }
+        else {
+
         }
     }
 
