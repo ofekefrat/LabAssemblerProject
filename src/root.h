@@ -5,6 +5,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <limits.h>
 #include "libs/libs.h"
 
 #define MAX_FILE_NAME 666
