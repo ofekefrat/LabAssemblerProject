@@ -1,7 +1,5 @@
 #include "data.h"
 
-/* TODO clear up jmp-like operand reception */
-/* TODO */
 
 void addIntArray(char* line, int* ind, Word* dataArray) {
     int i = *ind;
@@ -34,11 +32,12 @@ int readNextNumber(const char* line, int* ind) {
     *ind = i;
 
     if (!isdigit(digits[0])) {
-        printError("No digits found when expecting number");
-        return INT_MIN;
+        if (digits[0] != '-' || strlen(digits) < 2 || !isdigit(digits[1])) {
+            printError("No digits found when expecting number");
+            return INT_MIN;
+        }
     }
-    else
-        return atoi(digits);
+    return atoi(digits);
 }
 
 int verifyComma(const char* line, int* ind) {

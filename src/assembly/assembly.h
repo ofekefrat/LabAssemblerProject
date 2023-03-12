@@ -4,6 +4,8 @@
 #include "../root.h"
 #define MAX_MEMORY 255
 
+extern int lineCount;
+
 
 void compile(FILE* source, const char* oldFileName);
 void phase1(FILE* source,
@@ -17,6 +19,7 @@ void phase2(FILE* source,
             List* externalSymbols,
             List* entrySymbols);
 
+void initializeWordArray(Word* array, int size, int value);
 void updateDataAddresses(List* symbolTable);
 void updateMemoryImage(Word* instructionArray);
 void freeSymbolTable(Node* node);

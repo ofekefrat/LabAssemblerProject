@@ -83,7 +83,7 @@ int readLabelName(char* buffer, int* ind, const char* line) {
 }
 
 void printError(const char* str) {
-    printf("in line %d: %s\n", lineCount, str);
+    printf("\nin line %d: %s\n", lineCount, str);
     if (!error) error=1;
 }
 
@@ -119,8 +119,7 @@ int isRegisterOperand(const char* operand) {
     return 0;
 }
 
-int isJumpOperand(const char* line) {
-    int i=0;
+int isJumpOperand(const char* line, int i) {
     while (stillInWord(line, i)) {
         if (i < MAX_LABEL_LENGTH && line[i] == '(') return 1;
         i++;

@@ -23,7 +23,7 @@ int isEntryDirective(const char* word);
 void readNextOperand(const char *line, int *ind, char* operand);
 int stillInWord(const char* line, int i);
 int isRegisterOperand(const char* operand);
-int isJumpOperand(const char* line);
+int isJumpOperand(const char* line, int i);
 void checkWhiteChar(const char* line, int i);
 
 int readNextNumber(const char* line, int* ind);

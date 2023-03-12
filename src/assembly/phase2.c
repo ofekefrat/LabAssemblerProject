@@ -10,13 +10,14 @@ void phase2(FILE* source,
     char line[MAX_LINE_LENGTH], word[MAX_TYPE_LENGTH];
     Item tempItem;
     Label* pLabel;
-    int lineCount=0;
 
     instructionCounter=0;
+    lineCount=0;
 
     rewind(source);
 
     while (fgets(line, MAX_LINE_LENGTH, source)) {
+        lineCount++;
         skipWhiteSpaces(line, &i);
 
         if (line[i] == ';' || line[i] == '\n') continue;
@@ -44,6 +45,5 @@ void phase2(FILE* source,
         else
             completeInstruction(line, &i, instructionArray, symbolTable, externalSymbols);
 
-        lineCount++;
     }
 }

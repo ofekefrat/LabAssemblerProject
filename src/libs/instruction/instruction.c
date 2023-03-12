@@ -1,5 +1,8 @@
 #include "instruction.h"
 
+/* TODO clear up jmp-like operand reception (what's going on with bne END)*/
+/* TODO */
+
 void addInstruction(const char *line,
                     int *ind,
                     int opcode,
@@ -23,7 +26,7 @@ void addInstruction(const char *line,
 
     if (isJumper(opcode)) {
         skipWhiteSpaces(line, &i);
-        if (isJumpOperand(line)) {
+        if (isJumpOperand(line, i)) {
             jmpLabelOperand.value = MISSING_LABEL;
             while (stillInWord(line, i) && line[i] != '(') {
                 checkWhiteChar(line, i);
@@ -45,20 +48,22 @@ void addInstruction(const char *line,
             checkWhiteChar(line, i);
             skipWhiteSpaces(line, &i);
             if (line[i] != ')') printError("Missing closing bracket");
+        }
+        else {
+            instruction.value |= label << DEST_AM_IND;
+        }
 
-            if ((instruction.value & regPar2) == regPar2) {
-                destOperand.value = immediate;
-                destOperand.value |= (operand2[1] - '0') << DEST_AM_IND;
-                if ((instruction.value & regPar1) == regPar1) {
-                    destOperand.value |= (operand1[1] - '0') << (DEST_AM_IND+6);
-                }
-            }
-            else if ((instruction.value & regPar1) == regPar1) {
-                sourceOperand.value = immediate;
-                sourceOperand.value |= (operand1[1] - '0') << (DEST_AM_IND+6);
+        if ((instruction.value & regPar2) == regPar2) {
+            destOperand.value = immediate;
+            destOperand.value |= (operand2[1] - '0') << DEST_AM_IND;
+            if ((instruction.value & regPar1) == regPar1) {
+                destOperand.value |= (operand1[1] - '0') << (DEST_AM_IND+6);
             }
         }
-        else printError("Incorrect operand type for operation");
+        else if ((instruction.value & regPar1) == regPar1) {
+            sourceOperand.value = immediate;
+            sourceOperand.value |= (operand1[1] - '0') << (DEST_AM_IND+6);
+        }
     }
     else {
         if (twoOps(opcode)) {
@@ -109,7 +114,7 @@ void addInstruction(const char *line,
 void completeInstruction(const char* line, int* ind, Word* instructionArray, List* symbolTable, List* externalSymbols) {
     char operand[MAX_LABEL_LENGTH];
     Word instruction, *currentOperand;
-    int i = *ind, j=0, opcode;
+    int i = *ind, j=0, opcode, r;
 
     instruction = instructionArray[instructionCounter];
 
@@ -122,13 +127,15 @@ void completeInstruction(const char* line, int* ind, Word* instructionArray, Lis
 
 
     if (isJumper(opcode)) {
-        skipWhiteSpaces(line, &i);
-        while (stillInWord(line, i) && line[i] != '(') {
-            operand[j++] = line[i++];
+        if ((r=isJumpOperand(line, i))) {
+            skipWhiteSpaces(line, &i);
+            while (stillInWord(line, i) && line[i] != '(') {
+                operand[j++] = line[i++];
+            }
+            i++;
+            *currentOperand = labelOp(operand, symbolTable, externalSymbols);
+            currentOperand = &instructionArray[++instructionCounter];
         }
-        i++;
-        *currentOperand = labelOp(operand, symbolTable, externalSymbols);
-        currentOperand = &instructionArray[++instructionCounter];
     }
 
     memset(operand, 0, MAX_LABEL_LENGTH);
@@ -138,7 +145,7 @@ void completeInstruction(const char* line, int* ind, Word* instructionArray, Lis
     if ((currentOperand->value & MISSING_LABEL) == MISSING_LABEL)
         *currentOperand = labelOp(operand, symbolTable, externalSymbols);
 
-    if (twoOps(opcode) || isJumper(opcode)) {
+    if (twoOps(opcode) || r) {
         currentOperand = &instructionArray[++instructionCounter];
         if ((currentOperand->value & MISSING_LABEL) == MISSING_LABEL) {
             memset(operand, 0, MAX_LABEL_LENGTH);

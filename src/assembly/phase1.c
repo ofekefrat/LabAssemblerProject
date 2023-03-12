@@ -1,6 +1,6 @@
 #include "assembly.h"
 
-int lineCount=1;
+int lineCount=0;
 
 void phase1(FILE* source, Word* dataArray, Word* instructionArray, List* symbolTable) {
 
@@ -10,8 +10,9 @@ void phase1(FILE* source, Word* dataArray, Word* instructionArray, List* symbolT
     rewind(source);
 
     while (fgets(line, MAX_LINE_LENGTH, source)) {
-
+        lineCount++;
         i=0;
+        labelFlag=0;
         memset(word, 0, sizeof(word));
         memset(labelName, 0, sizeof(labelName));
 
@@ -67,8 +68,6 @@ void phase1(FILE* source, Word* dataArray, Word* instructionArray, List* symbolT
                 addInstruction(line, &i, r, instructionArray);
             }
         }
-
-        lineCount++;
     }
 }
 

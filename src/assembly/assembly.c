@@ -16,8 +16,11 @@ void compile(FILE* source, const char* oldFileName) {
     char newFileName[MAX_FILE_NAME];
     FILE* objectFile;
 /*    Word memoryImage[MAX_MEMORY];*/
-    Word dataArray[MAX_DATA] = { 0 };
-    Word instructionArray[MAX_INSTRUCTIONS] = { INST_ERROR };
+    Word dataArray[MAX_DATA];
+    Word instructionArray[MAX_INSTRUCTIONS];
+
+    initializeWordArray(dataArray, MAX_DATA, 0);
+    initializeWordArray(instructionArray, MAX_INSTRUCTIONS, INST_ERROR);
 
     List symbolTable = { NULL, NULL };
     List externalSymbols = { NULL, NULL };
@@ -55,6 +58,8 @@ void compile(FILE* source, const char* oldFileName) {
 
     objectFile = fopen(newFileName, "w+");
     makeObFile(objectFile, instructionArray, dataArray);
+    putchar('\n');
+    putchar('\n');
     printFileContent(objectFile);
 
     fclose(objectFile);
@@ -112,4 +117,11 @@ void freeSymbolTable(Node* node) {
 
     freeSymbolTable(node->next);
     free(node);
+}
+
+void initializeWordArray(Word* array, int size, int value) {
+    int i;
+
+    for (i=0; i < size; i++)
+        array[i].value = value;
 }
