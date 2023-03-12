@@ -35,7 +35,8 @@ int isUniqueLabelName(const char* name, List symbolTable) {
 }
 
 void addLabel(const char* name, const char* type, int address, List* symbolTable) {
-    Item item = { .label = newLabel(name, type, address) };
+    Item item;
+    item.label = newLabel(name, type, address);
     addToList(symbolTable, newNode(item));
 }
 

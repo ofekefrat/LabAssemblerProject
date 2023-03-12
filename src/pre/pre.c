@@ -7,11 +7,12 @@ FILE* preAssemble(FILE* source, const char* oldFileName) {
     char line[MAX_LINE_LENGTH];
     char newFileName[MAX_FILE_NAME];
     char labelName[MAX_LABEL_LENGTH];
+    FILE* output;
     List macros = { NULL, NULL };
 
     sprintf(newFileName, "%s.am", oldFileName);
 
-    FILE* output = fopen(newFileName, "w+");
+    output = fopen(newFileName, "w+");
 
     while (fgets(line, MAX_LINE_LENGTH, source)) {
         i=0;

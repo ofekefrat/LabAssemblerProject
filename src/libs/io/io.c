@@ -102,7 +102,8 @@ Node* isSpread(List macros, const char* line, char* buffer) {
     }
 
     skipWhiteSpaces(line, &i);
-    Node* currentNode = macros.head;
+    Node* currentNode;
+    currentNode = macros.head;
     while (currentNode != NULL) {
         if (!strcmp(currentNode->item.macro.name, line+i))
             return currentNode;
@@ -150,12 +151,12 @@ void makeObLine(Word word, int i, char* newLine) {
     memset(address, 0, ADDRESS_PRINT_LENGTH);
     memset(value, 0, WORD_STR_LENGTH);
 
-    snprintf(address, ADDRESS_PRINT_LENGTH,"0%d", i+RESERVED_SPACE);
+    sprintf(address,"0%d", i+RESERVED_SPACE);
 
     binTranslator(word.value, value);
     reverseWord(value);
 
-    snprintf(newLine, MAX_LINE_LENGTH, "%s\t%s\n", address, value);
+    sprintf(newLine, "%s\t%s\n", address, value);
 }
 
 void reverseWord(char* buff) {

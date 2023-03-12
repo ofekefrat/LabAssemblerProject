@@ -2,7 +2,9 @@
 
 Node* newNode(Item item) {
     Node* temp = (Node*) malloc(sizeof(Node));
-    Node new = { item, NULL };
+    Node new;
+    new.item = item;
+    new.next = NULL;
     *temp = new;
     return temp;
 }
