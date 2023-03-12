@@ -15,7 +15,6 @@ int dataCounter=0, instructionCounter=0;
 void compile(FILE* source, const char* oldFileName) {
     char newFileName[MAX_FILE_NAME];
     FILE* objectFile;
-/*    Word memoryImage[MAX_MEMORY];*/
     Word dataArray[MAX_DATA];
     Word instructionArray[MAX_INSTRUCTIONS];
     List symbolTable = { NULL, NULL };
@@ -51,9 +50,6 @@ void compile(FILE* source, const char* oldFileName) {
     }
     fclose(source);
     freeSymbolTable(symbolTable.head);
-
-    updateMemoryImage(instructionArray);
-
 
     objectFile = fopen(newFileName, "w+");
     makeObFile(objectFile, instructionArray, dataArray);

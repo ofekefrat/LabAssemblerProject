@@ -10,8 +10,9 @@ void addIntArray(char* line, int* ind, Word* dataArray) {
         skipWhiteSpaces(line, &i);
         if (line[i] != '\n' && i+1 < strlen(line)) verifyComma(line, &i);
         if (num != INT_MIN) {
-            if (num < (1 << 15))
+            if (num < (1 << 15)) {
                 dataArray[dataCounter++].value = num;
+            }
             else
                 printError("number is too big");
         }
@@ -37,6 +38,7 @@ int readNextNumber(const char* line, int* ind) {
             return INT_MIN;
         }
     }
+
     return atoi(digits);
 }
 
@@ -58,7 +60,7 @@ void addString(char* line, int* ind, Word* dataArray) {
     while (i < strlen(line) && line[i] != '\"') i++;
 
     for ( i+=1; i < strlen(line) && line[i] != '\"'; i++) {
-        dataArray[dataCounter++].value = (short) line[i];
+        dataArray[dataCounter++].value = (int) line[i];
     }
 
     dataArray[dataCounter++].value = 0;

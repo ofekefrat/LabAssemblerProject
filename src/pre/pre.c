@@ -55,4 +55,3 @@ void freeLinesList(Node* currentLine) {
     freeLinesList(currentLine->next);
     free(currentLine);
 }
-

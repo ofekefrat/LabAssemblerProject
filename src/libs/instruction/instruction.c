@@ -26,8 +26,8 @@ void addInstruction(const char *line,
 
     if (isJumper(opcode)) {
         skipWhiteSpaces(line, &i);
-        instruction.value |= label << DEST_AM_IND;
         if (isJumpOperand(line, i)) {
+            instruction.value |= jump << DEST_AM_IND;
             jmpLabelOperand.value = MISSING_LABEL;
             while (stillInWord(line, i) && line[i] != '(') {
                 checkWhiteChar(line, i);
@@ -51,7 +51,7 @@ void addInstruction(const char *line,
             if (line[i] != ')') printError("Missing closing bracket");
         }
         else {
-
+            instruction.value |= label << DEST_AM_IND;
         }
 
         if ((instruction.value & regPar2) == regPar2) {
@@ -102,18 +102,18 @@ void addInstruction(const char *line,
     instructionArray[instructionCounter++] = instruction;
 
     if (isJumper(opcode)) {
-        if (jmpLabelOperand.value == INST_ERROR) return;
-        instructionArray[instructionCounter++] = jmpLabelOperand;
+        if (jmpLabelOperand.value != INST_ERROR)
+            instructionArray[instructionCounter++] = jmpLabelOperand;
     }
 
     if (twoOps(opcode) || isJumper(opcode)) {
-        if (sourceOperand.value == INST_ERROR) return;
-        instructionArray[instructionCounter++] = sourceOperand;
+        if (sourceOperand.value != INST_ERROR)
+            instructionArray[instructionCounter++] = sourceOperand;
     }
 
     if (opcode < rts) {
-        if (destOperand.value == INST_ERROR) return;
-        instructionArray[instructionCounter++] = destOperand;
+        if (destOperand.value != INST_ERROR)
+            instructionArray[instructionCounter++] = destOperand;
     }
 }
 
@@ -122,12 +122,12 @@ void completeInstruction(const char* line, int* ind, Word* instructionArray, Lis
     Word instruction, *currentOperand;
     int i = *ind, j=0, opcode, r;
 
-    instruction = instructionArray[instructionCounter];
+    instruction = instructionArray[instructionCounter++];
 
     if (!labelsInInstruction(instruction)) return;
 
-    opcode = instruction.value & FULL_OPCODE_BITS << OPCODE_IND;
-    currentOperand = &instructionArray[++instructionCounter];
+    opcode = instruction.value & (FULL_OPCODE_BITS << OPCODE_IND);
+    currentOperand = &instructionArray[instructionCounter++];
 
     memset(operand, 0, MAX_LABEL_LENGTH);
 
@@ -143,7 +143,7 @@ void completeInstruction(const char* line, int* ind, Word* instructionArray, Lis
             }
             i++;
             *currentOperand = labelOp(operand, symbolTable, externalSymbols);
-            currentOperand = &instructionArray[++instructionCounter];
+            currentOperand = &instructionArray[instructionCounter++];
         }
     }
 
@@ -151,11 +151,12 @@ void completeInstruction(const char* line, int* ind, Word* instructionArray, Lis
 
     skipWhiteSpaces(line, &i);
     readNextOperand(line, &i, operand);
-    if ((currentOperand->value & MISSING_LABEL) == MISSING_LABEL)
+    if ((currentOperand->value & MISSING_LABEL) == MISSING_LABEL) {
         *currentOperand = labelOp(operand, symbolTable, externalSymbols);
+        currentOperand = &instructionArray[instructionCounter++];
+    }
 
     if (twoOps(opcode) || r) {
-        currentOperand = &instructionArray[++instructionCounter];
         if ((currentOperand->value & MISSING_LABEL) == MISSING_LABEL) {
             memset(operand, 0, MAX_LABEL_LENGTH);
             verifyComma(line, &i);
@@ -174,6 +175,7 @@ int labelsInInstruction(Word instruction) {
 
     res += ((instruction.value & label << SOURCE_AM_IND) == label << SOURCE_AM_IND);
     res += ((instruction.value & label << DEST_AM_IND) == label << DEST_AM_IND);
+    res += ((instruction.value & jump << DEST_AM_IND) == jump << DEST_AM_IND);
     return res;
 }
 
@@ -276,7 +278,7 @@ Word immediateOp(const char* operand, int* ind) {
     if (num != INT_MIN) {
         if (num < (1 << (WORD_LENGTH-2))) {
             operandWord.value = immediate;
-            operandWord.value |= num;
+            operandWord.value |= (num << 2);
         }
         else printError("number is too big");
     }
