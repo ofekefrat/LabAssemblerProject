@@ -18,7 +18,7 @@
 enum opcode {mov, cmp, add, sub, not, clr, lea, inc, dec, jmp, bne,
     red, prn, jsr, rts, stop};
 
-enum AddressingMethod {label=1, jump, reg};
+enum AddressingMethod {label=1, reg=3};
 
 enum LocationType {immediate, ext, reloc}; /*A,R,E*/
 

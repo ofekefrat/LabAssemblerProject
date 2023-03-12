@@ -4,7 +4,7 @@ int lineCount=0;
 
 void phase1(FILE* source, Word* dataArray, Word* instructionArray, List* symbolTable) {
 
-    int i, labelFlag=0, r;
+    int i, labelFlag, r;
     char line[MAX_LINE_LENGTH], labelName[MAX_LABEL_LENGTH], word[MAX_TYPE_LENGTH];
 
     rewind(source);

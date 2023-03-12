@@ -6,7 +6,7 @@ void phase2(FILE* source,
             List* externalSymbols,
             List* entrySymbols) {
 
-    int i;
+    int i=0;
     char line[MAX_LINE_LENGTH], word[MAX_TYPE_LENGTH];
     Item tempItem;
     Label* pLabel;
@@ -27,10 +27,9 @@ void phase2(FILE* source,
         }
         skipWhiteSpaces(line, &i);
 
-        readNextWord(word, line, &i);
-
         if (isDirective(line, &i)) {
 
+            readNextWord(word, line, &i);
             if (isEntryDirective(word)) {
                 skipWhiteSpaces(line, &i);
                 readNextWord(word, line, &i);
@@ -44,6 +43,5 @@ void phase2(FILE* source,
         }
         else
             completeInstruction(line, &i, instructionArray, symbolTable, externalSymbols);
-
     }
 }

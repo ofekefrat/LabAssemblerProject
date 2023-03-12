@@ -83,9 +83,9 @@ void updateMemoryImage(Word* instructionArray) {
 
     for (i=0; instructionArray[i].value != INST_ERROR; i++) {
         currentInst = &instructionArray[i];
-        if ((currentInst->value & label) == label) {
+        if ((currentInst->value & reloc) == reloc) {
             oldAddress = ((~3) & currentInst->value) >> 2;
-            currentInst->value = (label | (oldAddress + RESERVED_SPACE));
+            currentInst->value = reloc | ((oldAddress + RESERVED_SPACE) << 2);
         }
     }
 }
