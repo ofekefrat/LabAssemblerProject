@@ -58,7 +58,7 @@ void addString(char* line, int* ind, Word* dataArray) {
     while (i < strlen(line) && line[i] != '\"') i++;
 
     for ( i+=1; i < strlen(line) && line[i] != '\"'; i++) {
-        dataArray[dataCounter++].value = (int) line[i];
+        dataArray[dataCounter++].value = (short) line[i];
     }
 
     dataArray[dataCounter++].value = 0;

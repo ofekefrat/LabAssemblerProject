@@ -125,6 +125,9 @@ void completeInstruction(const char* line, int* ind, Word* instructionArray, Lis
 
     memset(operand, 0, MAX_LABEL_LENGTH);
 
+    skipWhiteSpaces(line, &i);
+    skipWord(line, &i);        /* skipping the operation field */
+    skipWhiteSpaces(line, &i);
 
     if (isJumper(opcode)) {
         if ((r=isJumpOperand(line, i))) {

@@ -18,6 +18,7 @@ void phase2(FILE* source,
 
     while (fgets(line, MAX_LINE_LENGTH, source)) {
         lineCount++;
+        i=0;
         skipWhiteSpaces(line, &i);
 
         if (line[i] == ';' || line[i] == '\n') continue;
@@ -38,6 +39,9 @@ void phase2(FILE* source,
                 if (pLabel) {
                     tempItem.label = *pLabel;
                     addToList(entrySymbols, newNode(tempItem));
+                }
+                else {
+                    printError("Entry cannot use undefined label");
                 }
             } else continue;
         }

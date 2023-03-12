@@ -11,7 +11,7 @@
 #define SOURCE_AM_IND 4
 #define DEST_AM_IND 2
 #define INST_ERROR 3
-#define MISSING_LABEL (7 >> 1)
+#define MISSING_LABEL (2 | (1 << 3))
 #define OPCODES {"mov", "cmp", "add", "sub", "not", "clr", "lea", "inc", "dec", "jmp", "bne", \
                     "red", "prn", "jsr", "rts", "stop"}
 

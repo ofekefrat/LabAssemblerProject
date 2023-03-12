@@ -37,6 +37,12 @@ void skipWhiteSpaces(const char* line, int* ind) {
     *ind = i;
 }
 
+void skipWord(const char* line, int* ind) {
+    int i = *ind;
+    while (stillInWord(line, i)) i++;
+    *ind = i;
+}
+
 int skipLabel(const char* line, int* ind) {
     int i = *ind;
     while (line[i] != '\n' && line[i] != ':') i++;

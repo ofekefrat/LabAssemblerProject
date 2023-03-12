@@ -32,6 +32,7 @@ int verifyComma(const char* line, int* ind);
 void printError(const char* str);
 void skipWhiteSpaces(const char* line, int* ind);
 int skipLabel(const char* line, int* ind);
+void skipWord(const char* line, int* ind);
 void readNextWord(char* buffer, const char* line, int* ind);
 
 void binTranslator(unsigned int num, char* buff);
