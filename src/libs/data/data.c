@@ -17,9 +17,6 @@ void addIntArray(char* line, int* ind, Word* dataArray) {
             else
                 printError("number is too big");
         }
-        else {
-
-        }
     }
 
     *ind = i;

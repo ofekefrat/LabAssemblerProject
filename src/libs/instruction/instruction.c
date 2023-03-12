@@ -11,6 +11,7 @@ void addInstruction(const char *line,
     int regSrc = reg << SOURCE_AM_IND , regDest = reg << DEST_AM_IND
             , regPar1 = reg << PAR1_IND, regPar2 = reg << PAR2_IND;
 
+    jmpLabelOperand.value = INST_ERROR;
     sourceOperand.value = INST_ERROR;
     destOperand.value = INST_ERROR;
 
@@ -209,10 +210,6 @@ Word getSourceOperand(const char* operand, int opcode, Word* instruction) {
 
 int isJumper(int opcode) {
     return (opcode == bne || opcode == jmp || opcode == jsr);
-}
-
-Word jumpOp() {
-
 }
 
 Word getDestOperand(const char* operand, int opcode, Word* instruction) {
