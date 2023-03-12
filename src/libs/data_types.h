@@ -45,4 +45,4 @@ typedef struct Word {
     unsigned int value : WORD_LENGTH;
 }Word;
 
-#endif //data_types_h
+#endif

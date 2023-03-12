@@ -9,4 +9,4 @@
 void addIntArray(char* line, int* ind, Word* dataArray);
 void addString(char* line, int* ind, Word* dataArray);
 
-#endif //data_h
+#endif

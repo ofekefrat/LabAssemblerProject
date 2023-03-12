@@ -18,7 +18,7 @@ FILE* preAssemble(FILE* source, const char* oldFileName) {
         memset(labelName, 0, MAX_LABEL_LENGTH);
 
         skipWhiteSpaces(line, &i);
-        if (line[i] == ';') continue; // the only case where the line should be completely ignored
+        if (line[i] == ';') continue;
 
         if (isDef(line)) {
             addMacroToTable(source, line, &macros);

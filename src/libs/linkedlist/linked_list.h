@@ -6,4 +6,4 @@
 Node* newNode(Item item);
 void addToList(List* pList, Node* pNode);
 
-#endif //linked_list_h
+#endif

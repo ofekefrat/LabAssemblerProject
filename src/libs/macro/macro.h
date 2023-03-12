@@ -6,4 +6,4 @@
 void addMacroToTable(FILE* source, const char* defLine, List* macros);
 void spreadMacro(FILE* output, Node* macro, const char* labelName);
 
-#endif //macro_h
+#endif

@@ -184,7 +184,7 @@ void binTranslator(unsigned int num, char* buff) {
 void printFileContent(FILE* file) {
     char line[MAX_LINE_LENGTH];
     rewind(file);
-    while (fgets(line, MAX_LINE_LENGTH, file)) { // fgets, not EOF
+    while (fgets(line, MAX_LINE_LENGTH, file)) {
         printf("%s", line);
     }
 }

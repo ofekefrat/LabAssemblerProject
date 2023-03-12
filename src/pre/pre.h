@@ -7,4 +7,4 @@ FILE* preAssemble(FILE* source, const char* oldFileName);
 void freeLinesList(Node* currentLine);
 void freeMacroList(Node* currentNode);
 
-#endif //pre_h
+#endif

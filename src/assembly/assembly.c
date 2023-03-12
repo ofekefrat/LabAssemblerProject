@@ -1,13 +1,13 @@
 #include "assembly.h"
 
-// ERRORS:
-//TODO confusion about cell size
-//TODO negative numbers
-//TODO free allocated memory
+/* ERRORS: */
+/*TODO confusion about cell size*/
+/*TODO negative numbers*/
+/*TODO free allocated memory*/
 
-// UNLESS THERE'S AN ERROR:
-//TODO Make .ext file
-//TODO Make .ent file
+/* UNLESS THERE'S AN ERROR:*/
+/*TODO Make .ext file*/
+/*TODO Make .ent file*/
 
 
 int dataCounter=0, instructionCounter=0;
@@ -15,7 +15,7 @@ int dataCounter=0, instructionCounter=0;
 void compile(FILE* source, const char* oldFileName) {
     char newFileName[MAX_FILE_NAME];
     FILE* objectFile;
-//    Word memoryImage[MAX_MEMORY];
+/*    Word memoryImage[MAX_MEMORY];*/
     Word dataArray[MAX_DATA] = { 0 };
     Word instructionArray[MAX_INSTRUCTIONS] = { INST_ERROR };
 

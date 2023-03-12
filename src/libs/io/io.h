@@ -38,4 +38,4 @@ void makeObFile(FILE* file, Word* instructionArray, Word* dataArray);
 void makeObLine(Word word, int i, char* newLine);
 void printFileContent(FILE*);
 
-#endif //io_h
+#endif

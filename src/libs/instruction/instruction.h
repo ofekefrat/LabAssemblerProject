@@ -33,4 +33,4 @@ Word immediateOp(const char* operand, int* ind);
 int twoOps(int opcode);
 int labelsInInstruction(Word instruction);
 
-#endif //instruction_h
+#endif

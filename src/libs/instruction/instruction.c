@@ -1,9 +1,9 @@
 #include "instruction.h"
 
-//TODO Addressing method 2
-//TODO non-existent register
+/*TODO Addressing method 2*/
+/*TODO non-existent register*/
 
-// look for SOURCE/OPERAND AM (respectively) in first instruction word to fill in blanks
+/* look for SOURCE/OPERAND AM (respectively) in first instruction word to fill in blanks*/
 void addInstruction(const char *line,
                     int *ind,
                     int opcode,
@@ -134,7 +134,7 @@ Word getSourceOperand(const char* operand, int opcode, Word* instruction) {
         }
 
         /* ADDRESSING METHOD 2? */
-//        else if () {}
+/*        else if () {}*/
 
         /* label operand */
     else {
@@ -164,7 +164,7 @@ Word getDestOperand(const char* operand, int opcode, Word* instruction) {
         instruction->value |= reg << DEST_AM_IND;
 
         /* address method 2*/
-//        else if()
+/*        else if()*/
 
     /* label */
     else  {
