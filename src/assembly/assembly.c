@@ -18,13 +18,12 @@ void compile(FILE* source, const char* oldFileName) {
 /*    Word memoryImage[MAX_MEMORY];*/
     Word dataArray[MAX_DATA];
     Word instructionArray[MAX_INSTRUCTIONS];
-
-    initializeWordArray(dataArray, MAX_DATA, 0);
-    initializeWordArray(instructionArray, MAX_INSTRUCTIONS, INST_ERROR);
-
     List symbolTable = { NULL, NULL };
     List externalSymbols = { NULL, NULL };
     List entrySymbols = { NULL, NULL };
+
+    initializeWordArray(dataArray, MAX_DATA, 0);
+    initializeWordArray(instructionArray, MAX_INSTRUCTIONS, INST_ERROR);
 
     sprintf(newFileName, "%s.ob", oldFileName);
 
