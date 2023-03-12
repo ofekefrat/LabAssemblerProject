@@ -28,6 +28,7 @@ FILE* preAssemble(FILE* source, const char* oldFileName) {
         else if ( (r = isSpread(macros, line, labelName)) ) {
             spreadMacro(output, r, labelName);
         }
+
         else {
             fputs(line, output);
         }

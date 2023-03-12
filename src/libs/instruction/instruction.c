@@ -26,6 +26,7 @@ void addInstruction(const char *line,
 
     if (isJumper(opcode)) {
         skipWhiteSpaces(line, &i);
+        instruction.value |= label << DEST_AM_IND;
         if (isJumpOperand(line, i)) {
             jmpLabelOperand.value = MISSING_LABEL;
             while (stillInWord(line, i) && line[i] != '(') {
@@ -50,7 +51,7 @@ void addInstruction(const char *line,
             if (line[i] != ')') printError("Missing closing bracket");
         }
         else {
-            instruction.value |= label << DEST_AM_IND;
+
         }
 
         if ((instruction.value & regPar2) == regPar2) {
@@ -99,6 +100,11 @@ void addInstruction(const char *line,
 
     *ind = i;
     instructionArray[instructionCounter++] = instruction;
+
+    if (isJumper(opcode)) {
+        if (jmpLabelOperand.value == INST_ERROR) return;
+        instructionArray[instructionCounter++] = jmpLabelOperand;
+    }
 
     if (twoOps(opcode) || isJumper(opcode)) {
         if (sourceOperand.value == INST_ERROR) return;
@@ -292,8 +298,8 @@ Word labelOp(const char* operand, List* symbolTable, List* externalSymbols) {
         }
         else {
             operandWord.value = reloc;
+            operandWord.value |= pLabel->value << 2;
         }
-        operandWord.value |= pLabel->value << 2;
     }
     else
         operandWord.value = MISSING_LABEL;

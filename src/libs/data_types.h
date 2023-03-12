@@ -40,9 +40,8 @@ struct Node {
     struct Node* next;
 };
 
-
 typedef struct Word {
-    short value;
+    int value : WORD_LENGTH;
 }Word;
 
 #endif

@@ -67,6 +67,8 @@ int isInstruction(const char* word) {
 int readLabelName(char* buffer, int* ind, const char* line) {
     int i = *ind, j=0;
 
+    memset(buffer, 0, MAX_LABEL_LENGTH);
+
     skipWhiteSpaces(line, &i);
     if (!isalpha(line[i])) {
         printError("first character in label name must be alphabetical");
@@ -150,6 +152,10 @@ int stillInWord(const char* line, int i) {
 
 void readNextWord(char* buffer, const char* line, int* ind) {
     int i = *ind, j=0;
+    memset(buffer, 0, MAX_TYPE_LENGTH);
+
+    skipWhiteSpaces(line, &i);
+
     while (j < MAX_TYPE_LENGTH && stillInWord(line, i)) {
         buffer[j++] = line[i++];
     }
