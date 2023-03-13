@@ -1,7 +1,6 @@
 #include "instruction.h"
 
-/* TODO clear up jmp-like operand reception (regs? immediates?) */
-/* TODO */
+/* TODO clear up jmp-like operand reception */
 
 void addInstruction(const char *line,
                     int *ind,
@@ -26,7 +25,7 @@ void addInstruction(const char *line,
 
     if (isJumper(opcode)) {
         skipWhiteSpaces(line, &i);
-        if (isJumpOperand(line, i)) {
+        if ((isJumpOperand(line, i))) {
             instruction.value |= jump << DEST_AM_IND;
             jmpLabelOperand.value = MISSING_LABEL;
             while (stillInWord(line, i) && line[i] != '(') {
@@ -45,14 +44,14 @@ void addInstruction(const char *line,
 
             checkWhiteChar(line, i);
             readNextOperand(line, &i, operand2);
-            destOperand = getDestOperand(operand2, opcode, &instruction);
+            destOperand = getDestOperand(operand2, opcode+stop, &instruction);
             checkWhiteChar(line, i);
             skipWhiteSpaces(line, &i);
             if (line[i] != ')') printError("Missing closing bracket");
         }
         else {
-            instruction.value |= label << DEST_AM_IND;
-            destOperand.value = MISSING_LABEL;
+            readNextOperand(line, &i, operand2);
+            destOperand = getDestOperand(operand2, opcode, &instruction);
         }
 
         if ((instruction.value & regPar2) == regPar2) {
@@ -169,17 +168,6 @@ void completeInstruction(const char* line, int* ind, Word* instructionArray, Lis
     *ind = i;
 }
 
-int labelsInInstruction(Word instruction) {
-    int res=0;
-    if ((instruction.value & rts << OPCODE_IND) == rts << OPCODE_IND
-    ||  (instruction.value & stop << OPCODE_IND) == stop << OPCODE_IND ) return 0;
-
-    res += ((instruction.value & label << SOURCE_AM_IND) == label << SOURCE_AM_IND);
-    res += ((instruction.value & label << DEST_AM_IND) == label << DEST_AM_IND);
-    res += ((instruction.value & jump << DEST_AM_IND) == jump << DEST_AM_IND);
-    return res;
-}
-
 int twoOps(int opcode) {
     return ((opcode >= mov && opcode <= sub) || opcode == lea);
 }
@@ -249,7 +237,7 @@ Word getDestOperand(const char* operand, int opcode, Word* instruction) {
     else if (isRegisterOperand(operand)) {
         r = operand[1] - '0';
         if (r > 0 && r <= NUM_OF_REGS) {
-            if (isJumper(opcode))
+            if (opcode > stop)
                 instruction->value |= reg << PAR2_IND;
             else
                 instruction->value |= reg << DEST_AM_IND;
@@ -262,7 +250,7 @@ Word getDestOperand(const char* operand, int opcode, Word* instruction) {
 
     /* label */
     else  {
-        if (isJumper(opcode))
+        if (opcode > stop)
             instruction->value |= label << PAR2_IND;
         else
             instruction->value |= label << DEST_AM_IND;
