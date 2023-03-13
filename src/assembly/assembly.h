@@ -3,6 +3,8 @@
 
 #include "../root.h"
 #define MAX_MEMORY 255
+#define MAX_ENT_LINE (MAX_LABEL_LENGTH + 1 + 3 + 2)
+#define MAX_OB_LINE (4 + 1 + WORD_LENGTH + 2)
 
 extern int lineCount;
 
@@ -21,7 +23,9 @@ void phase2(FILE* source,
 
 void initializeWordArray(Word* array, int size, int value);
 void updateDataAddresses(List* symbolTable);
-void updateMemoryImage(Word* instructionArray);
 void freeSymbolTable(Node* node);
+void makeExtraFile(FILE* file, List list);
+int getNumberStartInd(List list);
+void setSpaces(char* spaces, int amount);
 
 #endif

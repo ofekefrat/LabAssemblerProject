@@ -285,6 +285,7 @@ Word labelOp(const char* operand, List* symbolTable, List* externalSymbols) {
             operandWord.value = ext;
 
             temp.label = *pLabel;
+            temp.label.value = instructionCounter-1 + RESERVED_SPACE;
             addToList(externalSymbols, newNode(temp));
         }
         else {
@@ -297,6 +298,3 @@ Word labelOp(const char* operand, List* symbolTable, List* externalSymbols) {
 
     return operandWord;
 }
-
-
-

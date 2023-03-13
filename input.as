@@ -7,6 +7,7 @@ bne W(r4,r5)
 sub r1, r4
 bne L3
 L1: inc K
+.entry LOOP
 bne LOOP(K,W)
 END: stop
 STR: .string "abcdef"
