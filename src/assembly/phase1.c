@@ -40,7 +40,7 @@ void phase1(FILE* source, Word* dataArray, Word* instructionArray, List* symbolT
 
             if (isDataDirective(word) || isStringDirective(word)) {
                 if (labelFlag)
-                    addLabel(labelName, "data", dataCounter, symbolTable);
+                    addLabel(labelName, "data", dataCounter+RESERVED_SPACE, symbolTable);
 
                 if (isDataDirective(word))
                     addIntArray(line, &i, dataArray);
@@ -60,7 +60,7 @@ void phase1(FILE* source, Word* dataArray, Word* instructionArray, List* symbolT
 
         else { /* line is not a directive */
             if (labelFlag)
-                addLabel(labelName, "code", instructionCounter, symbolTable);
+                addLabel(labelName, "code", instructionCounter+RESERVED_SPACE, symbolTable);
 
             readNextWord(word, line, &i);
             if ((r=isInstruction(word))) {

@@ -1,6 +1,6 @@
 #include "instruction.h"
 
-/* TODO clear up jmp-like operand reception (what's going on with bne END)*/
+/* TODO clear up jmp-like operand reception (regs? immediates?) */
 /* TODO */
 
 void addInstruction(const char *line,
@@ -52,6 +52,7 @@ void addInstruction(const char *line,
         }
         else {
             instruction.value |= label << DEST_AM_IND;
+            destOperand.value = MISSING_LABEL;
         }
 
         if ((instruction.value & regPar2) == regPar2) {
@@ -118,15 +119,15 @@ void addInstruction(const char *line,
 }
 
 void completeInstruction(const char* line, int* ind, Word* instructionArray, List* symbolTable, List* externalSymbols) {
-    char operand[MAX_LABEL_LENGTH];
+    char operand[MAX_LABEL_LENGTH], operand2[MAX_LABEL_LENGTH];
     Word instruction, *currentOperand;
     int i = *ind, j=0, opcode, r;
 
     instruction = instructionArray[instructionCounter++];
 
-    if (!labelsInInstruction(instruction)) return;
+    opcode = (instruction.value & (FULL_OPCODE_BITS << OPCODE_IND)) >> OPCODE_IND;
+    if (opcode >= rts) return;
 
-    opcode = instruction.value & (FULL_OPCODE_BITS << OPCODE_IND);
     currentOperand = &instructionArray[instructionCounter++];
 
     memset(operand, 0, MAX_LABEL_LENGTH);
@@ -144,25 +145,25 @@ void completeInstruction(const char* line, int* ind, Word* instructionArray, Lis
             i++;
             *currentOperand = labelOp(operand, symbolTable, externalSymbols);
             currentOperand = &instructionArray[instructionCounter++];
+            memset(operand, 0, MAX_LABEL_LENGTH);
         }
     }
 
-    memset(operand, 0, MAX_LABEL_LENGTH);
-
     skipWhiteSpaces(line, &i);
     readNextOperand(line, &i, operand);
+
     if ((currentOperand->value & MISSING_LABEL) == MISSING_LABEL) {
         *currentOperand = labelOp(operand, symbolTable, externalSymbols);
-        currentOperand = &instructionArray[instructionCounter++];
     }
 
     if (twoOps(opcode) || r) {
-        if ((currentOperand->value & MISSING_LABEL) == MISSING_LABEL) {
-            memset(operand, 0, MAX_LABEL_LENGTH);
-            verifyComma(line, &i);
-            readNextOperand(line, &i, operand);
-            labelOp(operand, symbolTable, externalSymbols);
-            *currentOperand = labelOp(operand, symbolTable, externalSymbols);
+        verifyComma(line, &i);
+        memset(operand2, 0, MAX_LABEL_LENGTH);
+        readNextOperand(line, &i, operand2);
+        if (!(isRegisterOperand(operand) && isRegisterOperand(operand2))) {
+            currentOperand = &instructionArray[instructionCounter++];
+            if ((currentOperand->value & MISSING_LABEL) == MISSING_LABEL)
+                *currentOperand = labelOp(operand2, symbolTable, externalSymbols);
         }
     }
     *ind = i;
