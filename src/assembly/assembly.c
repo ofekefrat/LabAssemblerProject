@@ -1,7 +1,7 @@
 #include "assembly.h"
 
 /* ERRORS: */
-/*TODO confusion about cell size*/
+/*TODO confusion about cell size */
 /*TODO limit the number of "words"? */
 /*TODO label doesn't exist */
 
