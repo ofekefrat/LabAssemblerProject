@@ -1,5 +1,5 @@
 #include "io.h"
-extern int lineCount;
+extern int lineCount; /* which line are we in */
 
 int hasLabel(const char* line) {
     int i;
@@ -43,16 +43,14 @@ void skipWord(const char* line, int* ind) {
     *ind = i;
 }
 
-int skipLabel(const char* line, int* ind) {
+void skipLabel(const char* line, int* ind) {
     int i = *ind;
     while (line[i] != '\n' && line[i] != ':') i++;
 
     if (line[i] != '\n') {
         *ind = ++i;
-        return 1;
     }
     *ind = i;
-    return 0;
 }
 
 int isInstruction(const char* word) {
@@ -61,6 +59,19 @@ int isInstruction(const char* word) {
     for (i=0; i < NUM_OF_OPCODES; i++)
         if (!strcmp(word, ops[i])) return i+1;
 
+    return 0;
+}
+
+int verifyComma(const char* line, int* ind) {
+    int i = *ind;
+    skipWhiteSpaces(line, &i);
+
+    if (line[i] == ',') {
+        *ind = ++i;
+        return 1;
+    }
+    printError("Missing comma");
+    *ind = i;
     return 0;
 }
 
@@ -121,6 +132,28 @@ Node* isSpread(List macros, const char* line, char* buffer) {
 
     return NULL;
 }
+
+int readNextNumber(const char* line, int* ind) {
+    char digits[MAX_DIGITS];
+    int i = *ind, j=0;
+
+    memset(digits, 0, MAX_DIGITS);
+
+    skipWhiteSpaces(line, &i);
+    if (line[i] == '-') digits[j++] = line[i++];
+    while (i < strlen(line) && isdigit(line[i])) digits[j++] = line[i++];
+    *ind = i;
+
+    if (!isdigit(digits[0])) {
+        if (digits[0] != '-' || strlen(digits) < 2 || !isdigit(digits[1])) {
+            printError("No digits found when expecting number");
+            return INT_MIN;
+        }
+    }
+
+    return atoi(digits);
+}
+
 int isRegisterOperand(const char* operand) {
     if (strlen(operand) == 2 && operand[0] == 'r' && isdigit(operand[1]))
         return 1;

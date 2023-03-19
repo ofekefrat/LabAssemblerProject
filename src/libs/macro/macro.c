@@ -1,5 +1,6 @@
 #include "macro.h"
 
+/* newMacro: an initializer for macros defined by the user in the source file. returns the new macro struct instance. */
 Macro newMacro(const char* name) {
     Macro new;
     strcpy(new.name, name);
@@ -8,15 +9,15 @@ Macro newMacro(const char* name) {
 
     return new;
 }
-
-/* It's safe to assume "endmcr" will be present */
+/* addMacroToTable: add a macro to the macro table. */
 void addMacroToTable(FILE* input, const char* defLine, List* macros) {
+    /* It's safe to assume "endmcr" will be present */
     int i;
     char line[MAX_LINE_LENGTH];
     char name[MAX_MACRO_NAME_LENGTH];
-    Item tempItem;
+    Item tempItem; /* for node creation */
 
-    char* ops[] = OPCODES;
+    char* ops[] = OPCODES; /* the list of opcodes, to make sure no predefined keywords are being used as a macro name.*/
     Node* currentNode = macros->head;
 
     strcpy(name, defLine+4);
@@ -45,6 +46,7 @@ void addMacroToTable(FILE* input, const char* defLine, List* macros) {
     }
 }
 
+/* spreadMacro: replace the macro mentioned in the source file with the lines it defines.*/
 void spreadMacro(FILE* output, Node* macro, const char* labelName) {
     char newLine[MAX_LINE_LENGTH];
     Node* currentLine = macro->item.macro.lines.head;

@@ -9,7 +9,7 @@
 #include "label/label.h"
 #include "io/io.h"
 
-extern int error;
+extern int error; /* the error indicator declared in main.c */
 extern int dataCounter, instructionCounter;
 
 #endif

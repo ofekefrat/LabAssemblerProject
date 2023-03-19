@@ -1,20 +1,23 @@
 #include "assembly.h"
 
+/* TODO clear up jmp-like operand reception */
+
 /* ERRORS: */
 /*TODO confusion about cell size */
 /*TODO limit the number of "words"? */
-/*TODO label doesn't exist */
 
 int dataCounter=0, instructionCounter=0;
 
+/* compile: produce the required files. */
 void compile(FILE* source, const char* oldFileName) {
     char newFileName[MAX_FILE_NAME];
     FILE* objectFile, *entFile, *extFile;
-    Word dataArray[MAX_DATA];
-    Word instructionArray[MAX_INSTRUCTIONS];
-    List symbolTable = { NULL, NULL };
-    List externalSymbols = { NULL, NULL };
-    List entrySymbols = { NULL, NULL };
+    Word dataArray[MAX_DATA]; /* array for data to be put in the memory image */
+    Word instructionArray[MAX_INSTRUCTIONS]; /* array for the instructions to be put in the memory image.*/
+    List symbolTable = { NULL, NULL }; /* linked list for labels */
+    List externalSymbols = { NULL, NULL }; /* a separate list for the external labels defined,
+                                             * to later create .ext file*/
+    List entrySymbols = { NULL, NULL }; /* same thing for entries. */
 
     memset(newFileName, 0, MAX_FILE_NAME);
     initializeWordArray(dataArray, MAX_DATA, 0);
@@ -49,9 +52,6 @@ void compile(FILE* source, const char* oldFileName) {
 
     objectFile = fopen(newFileName, "w+");
     makeObFile(objectFile, instructionArray, dataArray);
-    putchar('\n');
-    putchar('\n');
-    printFileContent(objectFile);
     fclose(objectFile);
 
     if (entrySymbols.head != NULL) {
@@ -59,9 +59,6 @@ void compile(FILE* source, const char* oldFileName) {
         sprintf(newFileName, "%s.ent", oldFileName);
         entFile = fopen(newFileName, "w+");
         makeExtraFile(entFile, entrySymbols);
-        putchar('\n');
-        putchar('\n');
-        printFileContent(entFile);
     }
 
 
@@ -72,16 +69,12 @@ void compile(FILE* source, const char* oldFileName) {
         sprintf(newFileName, "%s.ext", oldFileName);
         extFile = fopen(newFileName, "w+");
         makeExtraFile(extFile, externalSymbols);
-        putchar('\n');
-        putchar('\n');
-        printFileContent(extFile);
     }
 
     freeSymbolTable(externalSymbols.head);
-
-
 }
 
+/* updateDataAddresses: update addresses of data in the memory image to appear after the instructions. */
 void updateDataAddresses(List* symbolTable) {
     Node* currentLabel = symbolTable->head;
 
@@ -93,6 +86,7 @@ void updateDataAddresses(List* symbolTable) {
     }
 }
 
+/* makeObFile: make the .ob file. */
 void makeObFile(FILE* file, Word* instructionArray, Word* dataArray) {
     int i=0, lineC;
     char newLine[MAX_OB_LINE];
@@ -113,8 +107,10 @@ void makeObFile(FILE* file, Word* instructionArray, Word* dataArray) {
         fputs(newLine, file);
         i++;
     }
+    fclose(file);
 }
 
+/* makeExtraFile: for creating the ext and ent files. */
 void makeExtraFile(FILE* file, List list) {
     char newLine[MAX_ENT_LINE];
     char spaces[MAX_LABEL_LENGTH+4];
@@ -138,8 +134,10 @@ void makeExtraFile(FILE* file, List list) {
         fputs(newLine, file);
         currentNode = currentNode->next;
     }
+    fclose(file);
 }
 
+/* setSpaces: place the required amount of spaces in the given buffer. */
 void setSpaces(char* spaces, int amount) {
     int i;
     for (i=0; i < amount; i++) {
@@ -147,6 +145,7 @@ void setSpaces(char* spaces, int amount) {
     }
 }
 
+/* freeSymbolTable: free allocated memory used for a linked list (specifically for symbolTable) */
 void freeSymbolTable(Node* node) {
     if (node == NULL) return;
 
@@ -154,6 +153,7 @@ void freeSymbolTable(Node* node) {
     free(node);
 }
 
+/* initializeWordArray: for initialization of the data and instruction arrays.*/
 void initializeWordArray(Word* array, int size, int value) {
     int i;
 
@@ -161,6 +161,7 @@ void initializeWordArray(Word* array, int size, int value) {
         array[i].value = value;
 }
 
+/* getNumberStartInd: get the index in which the address should start appearing (in ext and ent files) */
 int getNumberStartInd(List list) {
     Node* currentNode = list.head;
     size_t currLen, longest=0;

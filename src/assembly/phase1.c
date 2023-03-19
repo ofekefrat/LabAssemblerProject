@@ -2,6 +2,7 @@
 
 int lineCount=0;
 
+/* phase1: the first phase of assembly. */
 void phase1(FILE* source, Word* dataArray, Word* instructionArray, List* symbolTable) {
 
     int i, labelFlag, r;

@@ -1,7 +1,7 @@
 #include "label.h"
 
+/* newLabel: an initializer for a new label. returns the new label struct instance.*/
 Label newLabel(const char* name, const char* type, int address) {
-
     Label new;
 
     strcpy(new.name, name);
@@ -11,6 +11,7 @@ Label newLabel(const char* name, const char* type, int address) {
     return new;
 }
 
+/* isUniqueLabelName: returns 1 if the label name is unique and viable, and 0 otherwise. */
 int isUniqueLabelName(const char* name, List symbolTable) {
     int i;
     char* ops[] = OPCODES;
@@ -30,16 +31,18 @@ int isUniqueLabelName(const char* name, List symbolTable) {
         currentNode = currentNode->next;
     }
 
-
     return 1;
 }
 
+/* addLabel: add a label to the symbol table.*/
 void addLabel(const char* name, const char* type, int address, List* symbolTable) {
     Item item;
     item.label = newLabel(name, type, address);
     addToList(symbolTable, newNode(item));
 }
 
+/* getLabel: if the label exists in the symbol table (searched by name), returns a pointer to it.
+ * otherwise returns null */
 Label* getLabel(const char* name, List symbolTable) {
     Node* currentNode = symbolTable.head;
 

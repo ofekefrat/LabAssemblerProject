@@ -1,6 +1,6 @@
 #include "data.h"
 
-
+/* addIntArray: handle the .data directive: read every number in the line and add it to the memory image. */
 void addIntArray(char* line, int* ind, Word* dataArray) {
     int i = *ind;
     int num;
@@ -21,40 +21,7 @@ void addIntArray(char* line, int* ind, Word* dataArray) {
     *ind = i;
 }
 
-int readNextNumber(const char* line, int* ind) {
-    char digits[MAX_DIGITS];
-    int i = *ind, j=0;
-
-    memset(digits, 0, MAX_DIGITS);
-
-    skipWhiteSpaces(line, &i);
-    if (line[i] == '-') digits[j++] = line[i++];
-    while (i < strlen(line) && isdigit(line[i])) digits[j++] = line[i++];
-    *ind = i;
-
-    if (!isdigit(digits[0])) {
-        if (digits[0] != '-' || strlen(digits) < 2 || !isdigit(digits[1])) {
-            printError("No digits found when expecting number");
-            return INT_MIN;
-        }
-    }
-
-    return atoi(digits);
-}
-
-int verifyComma(const char* line, int* ind) {
-    int i = *ind;
-    skipWhiteSpaces(line, &i);
-
-    if (line[i] == ',') {
-        *ind = ++i;
-        return 1;
-    }
-    printError("Missing comma");
-    *ind = i;
-    return 0;
-}
-
+/* addString: handle the .string directive: read every character in the string and add it to the memory image. */
 void addString(char* line, int* ind, Word* dataArray) {
     int i = *ind;
     while (i < strlen(line) && line[i] != '\"') i++;

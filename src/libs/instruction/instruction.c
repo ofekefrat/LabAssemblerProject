@@ -1,7 +1,7 @@
 #include "instruction.h"
 
-/* TODO clear up jmp-like operand reception */
 
+/* addInstruction: add an instruction to the memory image. */
 void addInstruction(const char *line,
                     int *ind,
                     int opcode,
@@ -10,8 +10,8 @@ void addInstruction(const char *line,
     Word sourceOperand, destOperand, jmpLabelOperand, instruction;
     char operand1[MAX_LABEL_LENGTH], operand2[MAX_LABEL_LENGTH], operand0[MAX_LABEL_LENGTH];
     int i = *ind;
-    int regSrc = reg << SOURCE_AM_IND , regDest = reg << DEST_AM_IND
-            , regPar1 = reg << PAR1_IND, regPar2 = reg << PAR2_IND;
+    const int regSrc = reg << SOURCE_AM_IND , regDest = reg << DEST_AM_IND
+            , regPar1 = reg << PAR1_IND, regPar2 = reg << PAR2_IND; /* constants for clearer code */
 
     jmpLabelOperand.value = INST_ERROR;
     sourceOperand.value = INST_ERROR;
@@ -117,6 +117,7 @@ void addInstruction(const char *line,
     }
 }
 
+/* completeInstruction: in the second phase of assembly, complete any empty labels mentioned in this line in phase 1.*/
 void completeInstruction(const char* line, int* ind, Word* instructionArray, List* symbolTable, List* externalSymbols) {
     char operand[MAX_LABEL_LENGTH], operand2[MAX_LABEL_LENGTH];
     Word instruction, *currentOperand;
@@ -168,13 +169,15 @@ void completeInstruction(const char* line, int* ind, Word* instructionArray, Lis
     *ind = i;
 }
 
+/* twoOps: returns 1 if the opcode represents an operations requiring two operands, and 0 otherwise.*/
 int twoOps(int opcode) {
     return ((opcode >= mov && opcode <= sub) || opcode == lea);
 }
 
+/* getSourceOperand: handle the coding of the source operand in the instruction. returns the resulting word.*/
 Word getSourceOperand(const char* operand, int opcode, Word* instruction) {
     Word sourceOperand = { INST_ERROR };
-    int i=1, r; /* it's disgusting and get rid of it, you know what you did*/
+    int i=1, r;
 
     if (operand[0] == 0) /* no operands */
         printError("not enough operands");
@@ -186,7 +189,7 @@ Word getSourceOperand(const char* operand, int opcode, Word* instruction) {
         else
             sourceOperand = immediateOp(operand, &i);
 
-        /* register operand */
+    /* register operand */
     else if ((isRegisterOperand(operand)))
         if (opcode == lea)
             printError("Illegal operand for operation");
@@ -215,14 +218,18 @@ Word getSourceOperand(const char* operand, int opcode, Word* instruction) {
     return sourceOperand;
 }
 
+/* isJumper: returns 1 if the given opcode represents an operation that is able to receive a jump operand,
+ * and 0 otherwise.*/
 int isJumper(int opcode) {
     return (opcode == bne || opcode == jmp || opcode == jsr);
 }
 
+
+/* getDestOperand: handle the coding of the destination operand in the instruction. returns the resulting word.*/
 Word getDestOperand(const char* operand, int opcode, Word* instruction) {
     Word destOperand = { INST_ERROR };
 
-    int i=1, r; /* it's disgusting and get rid of it, you know what you did*/
+    int i=1, r;
 
     if (operand[0] == 0) /* no operands */
         printError("not enough operands");
@@ -261,6 +268,7 @@ Word getDestOperand(const char* operand, int opcode, Word* instruction) {
     return destOperand;
 }
 
+/* immediateOp: handle an immediate operand. return the resulting word. */
 Word immediateOp(const char* operand, int* ind) {
     Word operandWord = { INST_ERROR };
     int num = readNextNumber(operand, ind);
@@ -274,6 +282,8 @@ Word immediateOp(const char* operand, int* ind) {
     return operandWord;
 }
 
+/* labelOp: handle a label operand: if the label exists, return the resulting word.
+ * otherwise, report an error and return a "MISSING_LABEL" word. */
 Word labelOp(const char* operand, List* symbolTable, List* externalSymbols) {
     Word operandWord;
     Item temp;
@@ -293,8 +303,10 @@ Word labelOp(const char* operand, List* symbolTable, List* externalSymbols) {
             operandWord.value |= pLabel->value << 2;
         }
     }
-    else
+    else {
+        printError("Usage of undefined label");
         operandWord.value = MISSING_LABEL;
+    }
 
     return operandWord;
 }

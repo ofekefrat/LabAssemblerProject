@@ -62,4 +62,4 @@ add_executable(test
 
         pre/pre.h
         pre/pre.c
-        libs/data_types.h assembly/phase2.c main/test.c)
+        libs/data_types.h assembly/phase2.c)

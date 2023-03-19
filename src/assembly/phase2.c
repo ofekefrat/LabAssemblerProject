@@ -1,5 +1,6 @@
 #include "assembly.h"
 
+/* phase2: the second phase of assembly. */
 void phase2(FILE* source,
             Word* instructionArray,
             List* symbolTable,

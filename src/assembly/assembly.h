@@ -8,24 +8,41 @@
 
 extern int lineCount;
 
-
+/* compile: produce the required files. */
 void compile(FILE* source, const char* oldFileName);
+
+/* phase1: the first phase of assembly. */
 void phase1(FILE* source,
             Word* dataArray,
             Word* instructionArray,
             List* symbolTable);
 
+/* phase2: the second phase of assembly. */
 void phase2(FILE* source,
             Word* instructionArray,
             List* symbolTable,
             List* externalSymbols,
             List* entrySymbols);
 
+/* makeObFile: make the .ob file. */
+void makeObFile(FILE* file, Word* instructionArray, Word* dataArray);
+
+/* initializeWordArray: for initialization of the data and instruction arrays.*/
 void initializeWordArray(Word* array, int size, int value);
+
+/* updateDataAddresses: update addresses of data in the memory image to appear after the instructions. */
 void updateDataAddresses(List* symbolTable);
+
+/* freeSymbolTable: free allocated memory used for a linked list (specifically for symbolTable) */
 void freeSymbolTable(Node* node);
+
+/* makeExtraFile: for creating the ext and ent files. */
 void makeExtraFile(FILE* file, List list);
+
+/* getNumberStartInd: get the index in which the address should start appearing (in ext and ent files) */
 int getNumberStartInd(List list);
+
+/* setSpaces: place the required amount of spaces in the given buffer. */
 void setSpaces(char* spaces, int amount);
 
 #endif
