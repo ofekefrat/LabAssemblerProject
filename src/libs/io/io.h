@@ -89,6 +89,6 @@ void reverseWord(char* buff);
 /* makeObLine: produce the required line for the object file. */
 void makeObLine(Word word, int i, char* newLine);
 
-void printFileContent(FILE*); // out with you
+void printFileContent(FILE*);
 
 #endif
