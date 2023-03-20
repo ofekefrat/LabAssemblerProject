@@ -52,7 +52,6 @@ void compile(FILE* source, const char* oldFileName) {
 
     objectFile = fopen(newFileName, "w+");
     makeObFile(objectFile, instructionArray, dataArray);
-    fclose(objectFile);
 
     if (entrySymbols.head != NULL) {
         memset(newFileName, 0, MAX_FILE_NAME);
