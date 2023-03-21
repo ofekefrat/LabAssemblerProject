@@ -9,10 +9,6 @@ const char* sfn;
 
 /* compile: produce the required files. */
 void compile(FILE* source, const char* fileName) {
-    dataCounter=0;
-    instructionCounter=0;
-    error=0;
-    sfn = fileName;
     char newFileName[MAX_FILE_NAME];
     FILE* objectFile, *entFile, *extFile;
     Word dataArray[MAX_DATA]; /* array for data to be put in the memory image */
@@ -22,6 +18,10 @@ void compile(FILE* source, const char* fileName) {
                                              * to later create .ext file*/
     List entrySymbols = { NULL, NULL }; /* same thing for entries. */
 
+    dataCounter=0;
+    instructionCounter=0;
+    error=0;
+    sfn = fileName;
     memset(newFileName, 0, MAX_FILE_NAME);
     initializeWordArray(dataArray, MAX_DATA, 0);
     initializeWordArray(instructionArray, MAX_INSTRUCTIONS, INST_ERROR);
