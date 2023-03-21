@@ -15,13 +15,23 @@ Label newLabel(const char* name, const char* type, int address) {
 int isUniqueLabelName(const char* name, List symbolTable) {
     int i;
     char* ops[] = OPCODES;
+    char* dirs[] = DIRECTIVES;
     Node* currentNode = symbolTable.head;
 
-    for (i=0; i < NUM_OF_OPCODES; i++)
+    for (i=0; i < NUM_OF_OPCODES; i++) {
         if (!strcmp(name, ops[i])) {
-            printError("Unable to name label after existing operation name");
+            printError("Unable to name label after predefined operation name");
             return 0;
         }
+    }
+
+    for (i=0; i < NUM_OF_DIRECTIVES; i++) {
+        if (!strcmp(name, dirs[i])) {
+            printError("Unable to name label after predefined directive");
+            return 0;
+        }
+    }
+
 
     while (currentNode != NULL) {
         if (!strcmp(currentNode->item.label.name, name)) {

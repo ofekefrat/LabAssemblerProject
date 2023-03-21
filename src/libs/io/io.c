@@ -1,11 +1,18 @@
 #include "io.h"
-extern int lineCount; /* which line are we in */
+extern int lineCount;
+
+int isDataDirective(const char* word) { return (!strcmp(word, "data")); }
+int isStringDirective(const char* word) { return (!strcmp(word, "string")); }
+int isExternDirective(const char* word) { return (!strcmp(word, "extern")); }
+int isEntryDirective(const char* word) { return (!strcmp(word, "entry")); }
 
 int hasLabel(const char* line) {
     int i;
     for (i=0; i < strlen(line); i++) {
         if (line[i] == ':') {
-            if (i <= MAX_LABEL_LENGTH) return 1;
+            if (i <= MAX_LABEL_LENGTH)
+                return 1;
+
             printError("Label name is too long");
             return LABEL_ERROR;
         }
@@ -23,13 +30,6 @@ int isDirective(const char* line, int* ind) {
     }
     return 0;
 }
-
-int isDataDirective(const char* word) {
-    return (!strcmp(word, "data"));
-}
-int isStringDirective(const char* word) { return (!strcmp(word, "string")); }
-int isExternDirective(const char* word) { return (!strcmp(word, "extern")); }
-int isEntryDirective(const char* word) { return (!strcmp(word, "entry")); }
 
 void skipWhiteSpaces(const char* line, int* ind) {
     int i = *ind;
@@ -107,12 +107,44 @@ void printError(const char* str) {
 }
 
 int isDef(const char* line) {
+    char word[MAX_LINE_LENGTH];
+    int i=0;
+    skipWhiteSpaces(line, &i);
 
-    if (strlen(line) < 4 || line[0] != 'm' || line[1] != 'c' || line[2] != 'r' || line[3] != ' ')
-        return 0;
-
-    return 1;
+    readNextWord(word, line, &i, sizeof(word));
+    if (!strcmp(word, "mcr")) return 1;
+    return 0;
 }
+
+void getMacroName(const char* defLine, char* buffer) {
+    char word[MAX_MACRO_NAME_LENGTH];
+    int i=0;
+
+    skipWhiteSpaces(defLine, &i);
+    skipWord(defLine, &i);
+    skipWhiteSpaces(defLine, &i);
+    readNextWord(word, defLine, &i, sizeof(word));
+
+    strcpy(buffer, word);
+}
+
+int isEndmcr(const char* line) {
+    int i=0;
+    char word[MAX_LINE_LENGTH];
+
+    skipWhiteSpaces(line, &i);
+    readNextWord(word, line, &i, sizeof(word));
+
+    skipWhiteSpaces(line, &i);
+    if (line[i] != '\n' && i < strlen(line)) {
+        printError("superfluous characters after endmcr");
+        return 1;
+    }
+
+    if (!strcmp(line, "endmcr")) return 1;
+    return 0;
+}
+
 
 Node* isSpread(List macros, const char* line, char* buffer) {
     int i=0;
@@ -172,10 +204,10 @@ void checkWhiteChar(const char* line, int i) {
     if (line[i] == ' ' || line[i] == '\t') printError("white characters not allowed inside parameter");
 }
 
-void readNextOperand(const char *line, int *ind, char* operand) {
+void readNextOperand(const char *line, int *ind, char* operand, size_t size) {
     int i = *ind, j=0;
     skipWhiteSpaces(line, &i);
-    while (stillInWord(line, i) && line[i] != ',' && line[i] != ')') operand[j++] = line[i++];
+    while (stillInWord(line, i) && line[i] != ',' && line[i] != ')' && j < size) operand[j++] = line[i++];
     *ind = i;
 }
 
@@ -183,13 +215,13 @@ int stillInWord(const char* line, int i) {
     return (i < strlen(line) && line[i] != '\n' && line[i] != ' ' && line[i] != '\t');
 }
 
-void readNextWord(char* buffer, const char* line, int* ind) {
+void readNextWord(char* buffer, const char* line, int* ind, size_t size) {
     int i = *ind, j=0;
-    memset(buffer, 0, MAX_TYPE_LENGTH);
+    memset(buffer, 0, size);
 
     skipWhiteSpaces(line, &i);
 
-    while (j < MAX_TYPE_LENGTH && stillInWord(line, i)) {
+    while (j < size && stillInWord(line, i)) {
         buffer[j++] = line[i++];
     }
     *ind = i;
@@ -231,13 +263,5 @@ void binTranslator(unsigned int num, char* buff) {
             buff[i++] = '/';
         else
             buff[i++] = '.';
-    }
-}
-
-void printFileContent(FILE* file) {
-    char line[MAX_LINE_LENGTH];
-    rewind(file);
-    while (fgets(line, MAX_LINE_LENGTH, file)) {
-        printf("%s", line);
     }
 }

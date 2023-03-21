@@ -1,6 +1,6 @@
 #include "assembly.h"
 
-int lineCount=0;
+int lineCount=0;/* for error reporting */
 
 /* phase1: the first phase of assembly. */
 void phase1(FILE* source, Word* dataArray, Word* instructionArray, List* symbolTable) {
@@ -9,8 +9,10 @@ void phase1(FILE* source, Word* dataArray, Word* instructionArray, List* symbolT
     char line[MAX_LINE_LENGTH], labelName[MAX_LABEL_LENGTH], word[MAX_TYPE_LENGTH];
 
     rewind(source);
+    lineCount=0;
 
     while (fgets(line, MAX_LINE_LENGTH, source)) {
+        /* updating & resetting what's necessary */
         lineCount++;
         i=0;
         labelFlag=0;
@@ -29,6 +31,7 @@ void phase1(FILE* source, Word* dataArray, Word* instructionArray, List* symbolT
                 continue;
             }
         }
+
         skipWhiteSpaces(line, &i);
 
         if (isDirective(line, &i)) {
@@ -37,7 +40,7 @@ void phase1(FILE* source, Word* dataArray, Word* instructionArray, List* symbolT
                 continue;
             }
 
-            readNextWord(word, line, &i);
+            readNextWord(word, line, &i, sizeof(word));
 
             if (isDataDirective(word) || isStringDirective(word)) {
                 if (labelFlag)
@@ -51,24 +54,30 @@ void phase1(FILE* source, Word* dataArray, Word* instructionArray, List* symbolT
 
             else if (isExternDirective(word)) {
                 if (labelFlag) printError("Cannot label a .extern directive");
-                readNextWord(word, line, &i);
+                readNextWord(word, line, &i, sizeof(word));
+                isUniqueLabelName(word, *symbolTable);
                 addLabel(word, "external", 0, symbolTable);
             }
 
-            else if (isEntryDirective(word)) continue;
-            else printError("unknown directive");
+            else if (isEntryDirective(word))
+                continue;
+            else
+                printError("unknown directive");
         }
 
         else { /* line is not a directive */
             if (labelFlag)
                 addLabel(labelName, "code", instructionCounter+RESERVED_SPACE, symbolTable);
 
-            readNextWord(word, line, &i);
-            if ((r=isInstruction(word))) {
-                r--;
-                addInstruction(line, &i, r, instructionArray);
-            }
+            readNextWord(word, line, &i, sizeof(word));
+
+            if ((r=isInstruction(word)))
+                addInstruction(line, &i, --r, instructionArray);
+            else
+                printError("unknown command");
         }
     }
+    if (dataCounter + instructionCounter > MAX_MEMORY)
+        printError("maximum memory exceeded");
 }
 

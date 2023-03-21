@@ -14,6 +14,12 @@ Node* isSpread(List, const char*, char* buff);
 /* isDef: returns 1 if the line is attempting to define a new macro, and 0 otherwise.*/
 int isDef(const char*);
 
+/* isEndmcr: returns 1 if the line is "endmcr", and 0 otherwise */
+int isEndmcr(const char* line);
+
+/* getMacroName: read the name of the macro attempting to be defined and copy it to buffer */
+void getMacroName(const char* defLine, char* buffer);
+
 /* label related */
 /* hasLabel: check if the current line defines a new label.*/
 int hasLabel(const char* line);
@@ -41,7 +47,7 @@ int isExternDirective(const char* word);
 int isEntryDirective(const char* word);
 
 /* readNextOperand: read the next operand from the current line.*/
-void readNextOperand(const char *line, int *ind, char* operand);
+void readNextOperand(const char *line, int *ind, char* operand, size_t size);
 
 /* stillInWord: returns 1 if no separating characters are detected at the index, in the line,  and 0 otherwise.*/
 int stillInWord(const char* line, int i);
@@ -77,7 +83,7 @@ void skipLabel(const char* line, int* ind);
 void skipWord(const char* line, int* ind);
 
 /* readNextWord: read the next word in line from the index, and save the result in the given buffer.*/
-void readNextWord(char* buffer, const char* line, int* ind);
+void readNextWord(char* buffer, const char* line, int* ind, size_t size);
 
 /* binTranslator: translate the number from decimal to base 2 and save the result in the given buffer. */
 void binTranslator(unsigned int num, char* buffer);
@@ -85,10 +91,7 @@ void binTranslator(unsigned int num, char* buffer);
 /* reverseWord: reverse the given string. */
 void reverseWord(char* buff);
 
-
 /* makeObLine: produce the required line for the object file. */
 void makeObLine(Word word, int i, char* newLine);
-
-void printFileContent(FILE*);
 
 #endif

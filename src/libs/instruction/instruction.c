@@ -35,7 +35,7 @@ void addInstruction(const char *line,
             i++;
             checkWhiteChar(line, i);
 
-            readNextOperand(line, &i, operand1);
+            readNextOperand(line, &i, operand1, sizeof(operand1));
             sourceOperand = getSourceOperand(operand1, opcode, &instruction);
 
             checkWhiteChar(line, i);
@@ -43,14 +43,14 @@ void addInstruction(const char *line,
                 printError("Missing comma");
 
             checkWhiteChar(line, i);
-            readNextOperand(line, &i, operand2);
+            readNextOperand(line, &i, operand2, sizeof(operand2));
             destOperand = getDestOperand(operand2, opcode+stop, &instruction);
             checkWhiteChar(line, i);
             skipWhiteSpaces(line, &i);
             if (line[i] != ')') printError("Missing closing bracket");
         }
         else {
-            readNextOperand(line, &i, operand2);
+            readNextOperand(line, &i, operand2, sizeof(operand2));
             destOperand = getDestOperand(operand2, opcode, &instruction);
         }
 
@@ -69,7 +69,7 @@ void addInstruction(const char *line,
     else {
         if (twoOps(opcode)) {
             skipWhiteSpaces(line, &i);
-            readNextOperand(line, &i, operand1);
+            readNextOperand(line, &i, operand1, sizeof(operand1));
             sourceOperand = getSourceOperand(operand1, opcode, &instruction);
 
             if (!verifyComma(line, &i)) {
@@ -80,7 +80,7 @@ void addInstruction(const char *line,
         /* destination operand */
         if (opcode < rts) {
             skipWhiteSpaces(line, &i);
-            readNextOperand(line, &i, operand2);
+            readNextOperand(line, &i, operand2, sizeof(operand2));
             destOperand = getDestOperand(operand2, opcode, &instruction);
         }
 
@@ -150,7 +150,7 @@ void completeInstruction(const char* line, int* ind, Word* instructionArray, Lis
     }
 
     skipWhiteSpaces(line, &i);
-    readNextOperand(line, &i, operand);
+    readNextOperand(line, &i, operand, sizeof(operand));
 
     if ((currentOperand->value & MISSING_LABEL) == MISSING_LABEL) {
         *currentOperand = labelOp(operand, symbolTable, externalSymbols);
@@ -159,7 +159,7 @@ void completeInstruction(const char* line, int* ind, Word* instructionArray, Lis
     if (twoOps(opcode) || r) {
         verifyComma(line, &i);
         memset(operand2, 0, MAX_LABEL_LENGTH);
-        readNextOperand(line, &i, operand2);
+        readNextOperand(line, &i, operand2, sizeof(operand2));
         if (!(isRegisterOperand(operand) && isRegisterOperand(operand2))) {
             currentOperand = &instructionArray[instructionCounter++];
             if ((currentOperand->value & MISSING_LABEL) == MISSING_LABEL)

@@ -9,6 +9,7 @@ Macro newMacro(const char* name) {
 
     return new;
 }
+
 /* addMacroToTable: add a macro to the macro table. */
 void addMacroToTable(FILE* input, const char* defLine, List* macros) {
     /* It's safe to assume "endmcr" will be present */
@@ -18,9 +19,12 @@ void addMacroToTable(FILE* input, const char* defLine, List* macros) {
     Item tempItem; /* for node creation */
 
     char* ops[] = OPCODES; /* the list of opcodes, to make sure no predefined keywords are being used as a macro name.*/
+    char* dirs[] = DIRECTIVES;
     Node* currentNode = macros->head;
 
-    strcpy(name, defLine+4);
+    memset(name, 0, sizeof(name));
+    memset(line, 0, sizeof(line));
+    getMacroName(defLine, name);
 
     for (i=0; i < NUM_OF_OPCODES; i++) {
         if (!strcmp(name, ops[i])) {
@@ -28,6 +32,14 @@ void addMacroToTable(FILE* input, const char* defLine, List* macros) {
             return;
         }
     }
+
+    for (i=0; i < NUM_OF_DIRECTIVES; i++) {
+        if (!strcmp(name, dirs[i])) {
+            printError("Macro has the same name as one of the predefined directives");
+            return;
+        }
+    }
+
 
     while (currentNode != NULL) {
         if (!strcmp(currentNode->item.macro.name, name)) { /* checking if the names ARE equal */
@@ -40,7 +52,7 @@ void addMacroToTable(FILE* input, const char* defLine, List* macros) {
     addToList(macros, newNode(tempItem));
 
     while (fgets(line, MAX_LINE_LENGTH, input)) {
-        if (!strcmp(line, "endmcr\n")) break;
+        if (isEndmcr(line)) break;
         strcpy(tempItem.line, line);
         addToList( &macros->tail->item.macro.lines, newNode(tempItem) );
     }

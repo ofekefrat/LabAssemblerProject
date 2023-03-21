@@ -1,6 +1,5 @@
 #include "main.h"
 
-int error=0; /* to indicate an error has been encountered, and prevent the next phase from taking place. */
 
 int main(int argc, char** argv) {
     int fileCount;
@@ -16,12 +15,12 @@ int main(int argc, char** argv) {
                 fclose(source);
                 compile(am, argv[fileCount]);
             }
-            else {
+            else
                 printf("File pointer is null\n");
-            }
         }
     }
-    else printf("not enough arguments\n");
+    else
+        printf("not enough arguments\n");
 
     return 0;
 }

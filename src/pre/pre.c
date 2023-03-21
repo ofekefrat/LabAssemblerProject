@@ -37,8 +37,6 @@ FILE* preAssemble(FILE* source, const char* oldFileName) {
 
     freeMacroList(macros.head);
 
-    if (error) exit(1);
-
     return output;
 }
 

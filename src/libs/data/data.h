@@ -5,6 +5,8 @@
 
 #define MAX_DATA 666
 #define MAX_DIGITS 4
+#define DIRECTIVES {"data", "string", "extern", "entry"}
+#define NUM_OF_DIRECTIVES 4
 
 
 /* addIntArray: handle the .data directive: read every number in the line and add it to the memory image. */

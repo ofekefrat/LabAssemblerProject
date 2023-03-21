@@ -31,10 +31,10 @@ void phase2(FILE* source,
 
         if (isDirective(line, &i)) {
 
-            readNextWord(word, line, &i);
+            readNextWord(word, line, &i, sizeof(word));
             if (isEntryDirective(word)) {
                 skipWhiteSpaces(line, &i);
-                readNextWord(word, line, &i);
+                readNextWord(word, line, &i, sizeof(word));
                 pLabel = getLabel(word, *symbolTable);
 
                 if (pLabel) {

@@ -1,12 +1,10 @@
 #include "assembly.h"
 
-/* TODO clear up jmp-like operand reception */
-
-/* ERRORS: */
-/*TODO confusion about cell size */
-/*TODO limit the number of "words"? */
+/* TODO make sure sudden end of line is taken care of */
+/* TODO replace constants? */
 
 int dataCounter=0, instructionCounter=0;
+int error=0; /* to indicate an error has been encountered, and prevent the next phase from taking place. */
 
 /* compile: produce the required files. */
 void compile(FILE* source, const char* oldFileName) {
@@ -24,6 +22,11 @@ void compile(FILE* source, const char* oldFileName) {
     initializeWordArray(instructionArray, MAX_INSTRUCTIONS, INST_ERROR);
 
     sprintf(newFileName, "%s.ob", oldFileName);
+
+    if (error) {
+        printf("Errors found, stopping..\n");
+        return;
+    }
 
     phase1(source,
            dataArray,
@@ -90,6 +93,8 @@ void makeObFile(FILE* file, Word* instructionArray, Word* dataArray) {
     int i=0, lineC;
     char newLine[MAX_OB_LINE];
 
+    sprintf(newLine, " %d \t%d\n", instructionCounter, dataCounter);
+    fputs(newLine, file);
 
     while (instructionArray[i].value != INST_ERROR) {
         memset(newLine, 0, MAX_OB_LINE);
