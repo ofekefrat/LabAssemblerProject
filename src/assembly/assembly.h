@@ -12,13 +12,13 @@ extern const char* currentFileName;
 /* compile: produce the required files. */
 void compile(FILE* source, const char* fileName);
 
-/* phase1: the first phase of assembly. */
+/* phase1: the first phase of assembly: defining labels, instructions and directives (except for .entry) */
 void phase1(FILE *source,
             Word *dataArray,
             Word *instructionArray,
             List *symbolTable);
 
-/* phase2: the second phase of assembly. */
+/* phase2: the second phase of assembly: filling in missing label addresses, defining .entry directives. */
 void phase2(FILE *source,
             Word *instructionArray,
             List *symbolTable,
