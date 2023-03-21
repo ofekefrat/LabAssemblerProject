@@ -1,6 +1,6 @@
 #include "io.h"
 extern int lineCount;
-extern char* sfn;
+extern char* currentFileName;
 
 int isDataDirective(const char* word) { return (!strcmp(word, "data")); }
 int isStringDirective(const char* word) { return (!strcmp(word, "string")); }
@@ -103,7 +103,7 @@ int readLabelName(char* buffer, int* ind, const char* line) {
 }
 
 void printError(const char* str) {
-    printf("\nin %s, line %d: %s\n", sfn, lineCount, str);
+    printf("\nin %s, line %d: %s\n", currentFileName, lineCount, str);
     if (!error) error=1;
 }
 

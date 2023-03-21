@@ -5,7 +5,7 @@
 
 int dataCounter, instructionCounter;
 int error; /* to indicate an error has been encountered, and prevent the next phase from taking place. */
-const char* sfn; /* the name of the current file being worked on */
+const char* currentFileName; /* the name of the current file being worked on */
 
 /* compile: produce the required files. */
 void compile(FILE* source, const char* fileName) {
@@ -21,7 +21,7 @@ void compile(FILE* source, const char* fileName) {
     dataCounter=0;
     instructionCounter=0;
     error=0;
-    sfn = fileName;
+    currentFileName = fileName;
     memset(newFileName, 0, MAX_FILE_NAME);
     initializeWordArray(dataArray, MAX_DATA, 0);
     initializeWordArray(instructionArray, MAX_INSTRUCTIONS, INST_ERROR);

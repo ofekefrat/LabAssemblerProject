@@ -7,7 +7,7 @@
 #define MAX_OB_LINE (4 + 1 + WORD_LENGTH + 2)
 
 extern int lineCount;
-extern const char* sfn;
+extern const char* currentFileName;
 
 /* compile: produce the required files. */
 void compile(FILE* source, const char* fileName);
