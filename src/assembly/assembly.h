@@ -7,22 +7,23 @@
 #define MAX_OB_LINE (4 + 1 + WORD_LENGTH + 2)
 
 extern int lineCount;
+extern const char* sfn;
 
 /* compile: produce the required files. */
-void compile(FILE* source, const char* oldFileName);
+void compile(FILE* source, const char* fileName);
 
 /* phase1: the first phase of assembly. */
-void phase1(FILE* source,
-            Word* dataArray,
-            Word* instructionArray,
-            List* symbolTable);
+void phase1(FILE *source,
+            Word *dataArray,
+            Word *instructionArray,
+            List *symbolTable);
 
 /* phase2: the second phase of assembly. */
-void phase2(FILE* source,
-            Word* instructionArray,
-            List* symbolTable,
-            List* externalSymbols,
-            List* entrySymbols);
+void phase2(FILE *source,
+            Word *instructionArray,
+            List *symbolTable,
+            List *externalSymbols,
+            List *entrySymbols);
 
 /* makeObFile: make the .ob file. */
 void makeObFile(FILE* file, Word* instructionArray, Word* dataArray);

@@ -1,9 +1,7 @@
 #include "assembly.h"
 
-int lineCount=0;/* for error reporting */
-
 /* phase1: the first phase of assembly. */
-void phase1(FILE* source, Word* dataArray, Word* instructionArray, List* symbolTable) {
+void phase1(FILE *source, Word *dataArray, Word *instructionArray, List *symbolTable) {
 
     int i, labelFlag, r;
     char line[MAX_LINE_LENGTH], labelName[MAX_LABEL_LENGTH], word[MAX_TYPE_LENGTH];

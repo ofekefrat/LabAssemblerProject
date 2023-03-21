@@ -3,11 +3,16 @@
 /* TODO make sure sudden end of line is taken care of */
 /* TODO replace constants? */
 
-int dataCounter=0, instructionCounter=0;
-int error=0; /* to indicate an error has been encountered, and prevent the next phase from taking place. */
+int dataCounter, instructionCounter;
+int error; /* to indicate an error has been encountered, and prevent the next phase from taking place. */
+const char* sfn;
 
 /* compile: produce the required files. */
-void compile(FILE* source, const char* oldFileName) {
+void compile(FILE* source, const char* fileName) {
+    dataCounter=0;
+    instructionCounter=0;
+    error=0;
+    sfn = fileName;
     char newFileName[MAX_FILE_NAME];
     FILE* objectFile, *entFile, *extFile;
     Word dataArray[MAX_DATA]; /* array for data to be put in the memory image */
@@ -21,7 +26,7 @@ void compile(FILE* source, const char* oldFileName) {
     initializeWordArray(dataArray, MAX_DATA, 0);
     initializeWordArray(instructionArray, MAX_INSTRUCTIONS, INST_ERROR);
 
-    sprintf(newFileName, "%s.ob", oldFileName);
+    sprintf(newFileName, "%s.ob", fileName);
 
     if (error) {
         printf("Errors found, stopping..\n");
@@ -58,7 +63,7 @@ void compile(FILE* source, const char* oldFileName) {
 
     if (entrySymbols.head != NULL) {
         memset(newFileName, 0, MAX_FILE_NAME);
-        sprintf(newFileName, "%s.ent", oldFileName);
+        sprintf(newFileName, "%s.ent", fileName);
         entFile = fopen(newFileName, "w+");
         makeExtraFile(entFile, entrySymbols);
     }
@@ -68,7 +73,7 @@ void compile(FILE* source, const char* oldFileName) {
 
     if (externalSymbols.head != NULL) {
         memset(newFileName, 0, MAX_FILE_NAME);
-        sprintf(newFileName, "%s.ext", oldFileName);
+        sprintf(newFileName, "%s.ext", fileName);
         extFile = fopen(newFileName, "w+");
         makeExtraFile(extFile, externalSymbols);
     }

@@ -1,5 +1,6 @@
 #include "main.h"
 
+int lineCount=0; /* for error reporting */
 
 int main(int argc, char** argv) {
     int fileCount;

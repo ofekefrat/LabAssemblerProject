@@ -1,11 +1,7 @@
 #include "assembly.h"
 
 /* phase2: the second phase of assembly. */
-void phase2(FILE* source,
-            Word* instructionArray,
-            List* symbolTable,
-            List* externalSymbols,
-            List* entrySymbols) {
+void phase2(FILE *source, Word *instructionArray, List *symbolTable, List *externalSymbols, List *entrySymbols) {
 
     int i=0;
     char line[MAX_LINE_LENGTH], word[MAX_TYPE_LENGTH];

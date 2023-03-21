@@ -17,8 +17,8 @@ int isDef(const char*);
 /* isEndmcr: returns 1 if the line is "endmcr", and 0 otherwise */
 int isEndmcr(const char* line);
 
-/* getMacroName: read the name of the macro attempting to be defined and copy it to buffer */
-void getMacroName(const char* defLine, char* buffer);
+/* readMacroName: read the name of the macro attempting to be defined and copy it to buffer */
+void readMacroName(const char* line, char* buffer);
 
 /* label related */
 /* hasLabel: check if the current line defines a new label.*/

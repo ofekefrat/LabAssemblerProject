@@ -15,13 +15,14 @@ FILE* preAssemble(FILE* source, const char* oldFileName) {
 
     output = fopen(newFileName, "w+");
 
+    lineCount=0;
+
     while (fgets(line, MAX_LINE_LENGTH, source)) {
         i=0;
         memset(labelName, 0, MAX_LABEL_LENGTH);
+        lineCount++;
 
         skipWhiteSpaces(line, &i);
-        if (line[i] == ';') continue;
-
         if (isDef(line)) {
             addMacroToTable(source, line, &macros);
         }

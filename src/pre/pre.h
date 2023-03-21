@@ -12,4 +12,5 @@ void freeLinesList(Node* currentLine);
 /* freeLinesList: free up any allocated memory used for lines*/
 void freeMacroList(Node* currentNode);
 
+extern int lineCount;
 #endif

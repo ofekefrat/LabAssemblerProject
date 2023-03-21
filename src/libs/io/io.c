@@ -1,5 +1,6 @@
 #include "io.h"
 extern int lineCount;
+extern char* sfn;
 
 int isDataDirective(const char* word) { return (!strcmp(word, "data")); }
 int isStringDirective(const char* word) { return (!strcmp(word, "string")); }
@@ -102,7 +103,7 @@ int readLabelName(char* buffer, int* ind, const char* line) {
 }
 
 void printError(const char* str) {
-    printf("\nin line %d: %s\n", lineCount, str);
+    printf("\nin %s, line %d: %s\n", sfn, lineCount, str);
     if (!error) error=1;
 }
 
@@ -116,14 +117,14 @@ int isDef(const char* line) {
     return 0;
 }
 
-void getMacroName(const char* defLine, char* buffer) {
+void readMacroName(const char* line, char* buffer) {
     char word[MAX_MACRO_NAME_LENGTH];
     int i=0;
 
-    skipWhiteSpaces(defLine, &i);
-    skipWord(defLine, &i);
-    skipWhiteSpaces(defLine, &i);
-    readNextWord(word, defLine, &i, sizeof(word));
+    readNextWord(word, line, &i, sizeof(word));
+    if (!strcmp(word, "mcr")) {
+        readNextWord(word, line, &i, sizeof(word));
+    }
 
     strcpy(buffer, word);
 }
@@ -136,28 +137,31 @@ int isEndmcr(const char* line) {
     readNextWord(word, line, &i, sizeof(word));
 
     skipWhiteSpaces(line, &i);
-    if (line[i] != '\n' && i < strlen(line)) {
-        printError("superfluous characters after endmcr");
+    if (!strcmp(word, "endmcr")) {
+        if (line[i] != '\n' && i < strlen(line)) {
+            printError("superfluous characters after endmcr");
+        }
         return 1;
     }
-
-    if (!strcmp(line, "endmcr")) return 1;
     return 0;
 }
 
 
-Node* isSpread(List macros, const char* line, char* buffer) {
+Node* isSpread(List macros, const char* line, char* labelBuffer) {
     int i=0;
+    char name[MAX_LINE_LENGTH];
     Node* currentNode;
-
+    skipWhiteSpaces(line, &i);
     if (hasLabel(line)) {
-        readLabelName(buffer, &i, line);
+        readLabelName(labelBuffer, &i, line);
     }
+
+    readMacroName(line, name);
 
     skipWhiteSpaces(line, &i);
     currentNode = macros.head;
     while (currentNode != NULL) {
-        if (!strcmp(currentNode->item.macro.name, line+i))
+        if (!strcmp(currentNode->item.macro.name, name))
             return currentNode;
         currentNode = currentNode->next;
     }
@@ -173,6 +177,7 @@ int readNextNumber(const char* line, int* ind) {
 
     skipWhiteSpaces(line, &i);
     if (line[i] == '-') digits[j++] = line[i++];
+    else if (line[i] == '+') i++;
     while (i < strlen(line) && isdigit(line[i])) digits[j++] = line[i++];
     *ind = i;
 

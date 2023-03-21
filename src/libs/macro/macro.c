@@ -1,5 +1,5 @@
 #include "macro.h"
-
+extern int lineCount;
 /* newMacro: an initializer for macros defined by the user in the source file. returns the new macro struct instance. */
 Macro newMacro(const char* name) {
     Macro new;
@@ -24,7 +24,7 @@ void addMacroToTable(FILE* input, const char* defLine, List* macros) {
 
     memset(name, 0, sizeof(name));
     memset(line, 0, sizeof(line));
-    getMacroName(defLine, name);
+    readMacroName(defLine, name);
 
     for (i=0; i < NUM_OF_OPCODES; i++) {
         if (!strcmp(name, ops[i])) {
@@ -52,6 +52,7 @@ void addMacroToTable(FILE* input, const char* defLine, List* macros) {
     addToList(macros, newNode(tempItem));
 
     while (fgets(line, MAX_LINE_LENGTH, input)) {
+        lineCount++;
         if (isEndmcr(line)) break;
         strcpy(tempItem.line, line);
         addToList( &macros->tail->item.macro.lines, newNode(tempItem) );

@@ -195,7 +195,7 @@ Word getSourceOperand(const char* operand, int opcode, Word* instruction) {
             printError("Illegal operand for operation");
         else {
             r = operand[1] - '0';
-            if (r > 0 && r <= NUM_OF_REGS) {
+            if (r >= 0 && r <= NUM_OF_REGS) {
                 if (isJumper(opcode))
                     instruction->value |= reg << PAR1_IND;
                 else
@@ -243,7 +243,7 @@ Word getDestOperand(const char* operand, int opcode, Word* instruction) {
 
     else if (isRegisterOperand(operand)) {
         r = operand[1] - '0';
-        if (r > 0 && r <= NUM_OF_REGS) {
+        if (r >= 0 && r <= NUM_OF_REGS) {
             if (opcode > stop)
                 instruction->value |= reg << PAR2_IND;
             else
