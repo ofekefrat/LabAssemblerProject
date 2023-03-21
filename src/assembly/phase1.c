@@ -24,9 +24,7 @@ void phase1(FILE *source, Word *dataArray, Word *instructionArray, List *symbolT
             labelFlag=1;
             r = readLabelName(labelName, &i, line);
             if (r == LABEL_ERROR) continue;
-            if (!isUniqueLabelName(labelName, *symbolTable)) {
-                continue;
-            }
+            if (!isUniqueLabelName(labelName, *symbolTable)) continue;
         }
 
         skipWhiteSpaces(line, &i);
@@ -50,10 +48,10 @@ void phase1(FILE *source, Word *dataArray, Word *instructionArray, List *symbolT
             }
 
             else if (isExternDirective(word)) {
-                if (labelFlag) printError("Cannot label a .extern directive");
                 readNextWord(word, line, &i, sizeof(word));
-                isUniqueLabelName(word, *symbolTable);
-                addLabel(word, "external", 0, symbolTable);
+
+                if (isUniqueLabelName(word, *symbolTable))
+                    addLabel(word, "external", 0, symbolTable);
             }
 
             else if (isEntryDirective(word))
