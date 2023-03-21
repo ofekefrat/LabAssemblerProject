@@ -5,7 +5,7 @@
 
 int dataCounter, instructionCounter;
 int error; /* to indicate an error has been encountered, and prevent the next phase from taking place. */
-const char* sfn;
+const char* sfn; /* the name of the current file being worked on */
 
 /* compile: produce the required files. */
 void compile(FILE* source, const char* fileName) {
