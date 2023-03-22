@@ -268,11 +268,14 @@ Word getDestOperand(const char* operand, int opcode, Word* instruction) {
 /* immediateOp: handle an immediate operand. return the resulting word. */
 Word immediateOp(const char* operand, int* ind) {
     Word operandWord = { INST_ERROR };
+    int num;
+
     if (*ind >= strlen(operand) || operand[*ind] == '\n') {
         printError("missing number after #");
         return operandWord;
     }
-    int num = readNextNumber(operand, ind);
+
+    num = readNextNumber(operand, ind);
     if (num != INT_MIN) {
         if (num < (1 << (WORD_LENGTH-2)) && num > (-(1 << (WORD_LENGTH-2)))) {
             operandWord.value = immediate;
