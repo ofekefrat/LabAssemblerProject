@@ -25,8 +25,8 @@ int isDirective(const char* line, int* ind) {
     int i;
     i = *ind;
 
-    if (line[i] == '.') {
-        *ind = ++i;
+    if (i < strlen(line) && line[i] == '.') {
+        *ind = (i+1 < strlen(line)) ? i+1 : i;
         return 1;
     }
     return 0;
@@ -34,7 +34,7 @@ int isDirective(const char* line, int* ind) {
 
 void skipWhiteSpaces(const char* line, int* ind) {
     int i = *ind;
-    while (line[i] != '\n' && (line[i] == ' ' || line[i] == '\t')) i++;
+    while (i < strlen(line) && (line[i] == ' ' || line[i] == '\t')) i++;
     *ind = i;
 }
 
@@ -46,12 +46,9 @@ void skipWord(const char* line, int* ind) {
 
 void skipLabel(const char* line, int* ind) {
     int i = *ind;
-    while (line[i] != '\n' && line[i] != ':') i++;
+    while (i < strlen(line) && line[i] != ':') i++;
 
-    if (line[i] != '\n') {
-        *ind = ++i;
-    }
-    *ind = i;
+    *ind = (i+1 < strlen(line)) ? i+1 : i;
 }
 
 int isInstruction(const char* word) {
@@ -68,9 +65,10 @@ int verifyComma(const char* line, int* ind) {
     skipWhiteSpaces(line, &i);
 
     if (line[i] == ',') {
-        *ind = ++i;
+        *ind = (i+1 < strlen(line)) ? i+1 : i;
         return 1;
     }
+
     printError("Missing comma");
     *ind = i;
     return 0;
@@ -82,13 +80,15 @@ int readLabelName(char* buffer, int* ind, const char* line) {
     memset(buffer, 0, MAX_LABEL_LENGTH);
 
     skipWhiteSpaces(line, &i);
-    if (!isalpha(line[i])) {
+    if (i < strlen(line) && !isalpha(line[i])) {
         printError("first character in label name must be alphabetical");
         return LABEL_ERROR;
     }
-    buffer[j++] = line[i++];
 
-    while (j < MAX_LABEL_LENGTH && i < strlen(line) && line[i] != ':') {
+    if (i < strlen(line))
+        buffer[j++] = line[i++];
+
+    while (i < strlen(line) && j < MAX_LABEL_LENGTH && line[i] != ':') {
         if (!isalnum(line[i])) {
             printError("Only digits and alphabetical characters allowed in label name");
             return LABEL_ERROR;
@@ -97,6 +97,9 @@ int readLabelName(char* buffer, int* ind, const char* line) {
         buffer[j++] = line[i++];
     }
     skipLabel(line, &i);
+
+    if (i < strlen(line) && line[i] != ' ' && line[i] != '\t')
+        printError("missing white character (space or tab) after label's colon");
 
     *ind = i;
     return 1;
@@ -138,7 +141,7 @@ int isEndmcr(const char* line) {
 
     skipWhiteSpaces(line, &i);
     if (!strcmp(word, "endmcr")) {
-        if (line[i] != '\n' && i < strlen(line)) {
+        if (i < strlen(line) && line[i] != '\n') {
             printError("superfluous characters after endmcr");
         }
         return 1;
@@ -146,11 +149,11 @@ int isEndmcr(const char* line) {
     return 0;
 }
 
-
 Node* isSpread(List macros, const char* line, char* labelBuffer) {
     int i=0;
     char name[MAX_LINE_LENGTH];
     Node* currentNode;
+
     skipWhiteSpaces(line, &i);
     if (hasLabel(line)) {
         readLabelName(labelBuffer, &i, line);
@@ -159,6 +162,7 @@ Node* isSpread(List macros, const char* line, char* labelBuffer) {
     readMacroName(line, name);
 
     skipWhiteSpaces(line, &i);
+
     currentNode = macros.head;
     while (currentNode != NULL) {
         if (!strcmp(currentNode->item.macro.name, name))
@@ -176,19 +180,24 @@ int readNextNumber(const char* line, int* ind) {
     memset(digits, 0, MAX_DIGITS);
 
     skipWhiteSpaces(line, &i);
-    if (line[i] == '-') digits[j++] = line[i++];
-    else if (line[i] == '+') i++;
-    while (i < strlen(line) && isdigit(line[i])) digits[j++] = line[i++];
-    *ind = i;
+    if (i < strlen(line)) {
+        if (line[i] == '-') digits[j++] = line[i++];
+        else if (line[i] == '+') i++;
+        while (i < strlen(line) && isdigit(line[i]))
+            digits[j++] = line[i++];
+        *ind = i;
 
-    if (!isdigit(digits[0])) {
-        if (digits[0] != '-' || strlen(digits) < 2 || !isdigit(digits[1])) {
-            printError("No digits found when expecting number");
-            return INT_MIN;
+        if (!isdigit(digits[0])) {
+            if (digits[0] != '-' || strlen(digits) < 2 || !isdigit(digits[1])) {
+                printError("No digits found when expecting number");
+                return INT_MIN;
+            }
         }
+
+        return atoi(digits);
     }
 
-    return atoi(digits);
+    return INT_MIN;
 }
 
 int isRegisterOperand(const char* operand) {
@@ -199,20 +208,25 @@ int isRegisterOperand(const char* operand) {
 
 int isJumpOperand(const char* line, int i) {
     while (stillInWord(line, i)) {
-        if (i < MAX_LABEL_LENGTH && line[i] == '(') return 1;
+        if (i < strlen(line) && i < MAX_LABEL_LENGTH && line[i] == '(')
+            return 1;
+
         i++;
     }
     return 0;
 }
 
 void checkWhiteChar(const char* line, int i) {
-    if (line[i] == ' ' || line[i] == '\t') printError("white characters not allowed inside parameter");
+    if (i < strlen(line) && (line[i] == ' ' || line[i] == '\t'))
+        printError("white characters not allowed inside parameter");
 }
 
 void readNextOperand(const char *line, int *ind, char* operand, size_t size) {
     int i = *ind, j=0;
     skipWhiteSpaces(line, &i);
-    while (stillInWord(line, i) && line[i] != ',' && line[i] != ')' && j < size) operand[j++] = line[i++];
+    while (stillInWord(line, i) && line[i] != ',' && line[i] != ')' && j < size)
+        operand[j++] = line[i++];
+
     *ind = i;
 }
 

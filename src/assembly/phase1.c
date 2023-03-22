@@ -2,7 +2,7 @@
 
 void phase1(FILE *source, Word *dataArray, Word *instructionArray, List *symbolTable) {
 
-    int i, labelFlag, r;
+    int i, labelFlag, r; /* r: for passing the opcode around */
     char line[MAX_LINE_LENGTH], labelName[MAX_LABEL_LENGTH], word[MAX_TYPE_LENGTH];
 
     rewind(source);
@@ -18,6 +18,7 @@ void phase1(FILE *source, Word *dataArray, Word *instructionArray, List *symbolT
 
         skipWhiteSpaces(line, &i);
 
+        if (i >= strlen(line)) continue;
         if (line[i] == ';' || line[i] == '\n') continue;
 
         if (hasLabel(line)) {
@@ -30,7 +31,7 @@ void phase1(FILE *source, Word *dataArray, Word *instructionArray, List *symbolT
         skipWhiteSpaces(line, &i);
 
         if (isDirective(line, &i)) {
-            if (i == strlen(line)) {
+            if (i >= strlen(line) || line[i] == '\n') {
                 printError("No directive name entered");
                 continue;
             }
@@ -48,6 +49,10 @@ void phase1(FILE *source, Word *dataArray, Word *instructionArray, List *symbolT
             }
 
             else if (isExternDirective(word)) {
+                if (i >= strlen(line) || line[i] == '\n') {
+                    printError("no label name entered for extern directive");
+                    continue;
+                }
                 readNextWord(word, line, &i, sizeof(word));
 
                 if (isUniqueLabelName(word, *symbolTable))
@@ -66,8 +71,9 @@ void phase1(FILE *source, Word *dataArray, Word *instructionArray, List *symbolT
 
             readNextWord(word, line, &i, sizeof(word));
 
-            if ((r=isInstruction(word)))
+            if ((r = isInstruction(word))) {
                 addInstruction(line, &i, --r, instructionArray);
+            }
             else
                 printError("unknown command");
         }

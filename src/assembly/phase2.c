@@ -16,7 +16,9 @@ void phase2(FILE *source, Word *instructionArray, List *symbolTable, List *exter
         lineCount++;
         i=0;
         skipWhiteSpaces(line, &i);
+        memset(word, 0, sizeof(word));
 
+        if (i >= strlen(line)) continue;
         if (line[i] == ';' || line[i] == '\n') continue;
 
         if (hasLabel(line)) {
@@ -25,10 +27,17 @@ void phase2(FILE *source, Word *instructionArray, List *symbolTable, List *exter
         skipWhiteSpaces(line, &i);
 
         if (isDirective(line, &i)) {
+            if (i >= strlen(line) || line[i] == '\n') continue;
 
             readNextWord(word, line, &i, sizeof(word));
             if (isEntryDirective(word)) {
                 skipWhiteSpaces(line, &i);
+
+                if (i >= strlen(line) || line[i] == '\n') {
+                    printError("no label name entered for entry directive");
+                    continue;
+                }
+
                 readNextWord(word, line, &i, sizeof(word));
                 pLabel = getLabel(word, *symbolTable);
 
@@ -42,6 +51,7 @@ void phase2(FILE *source, Word *instructionArray, List *symbolTable, List *exter
             } else continue;
         }
         else
-            completeInstruction(line, &i, instructionArray, symbolTable, externalSymbols);
+            if (!error)
+                completeInstruction(line, &i, instructionArray, symbolTable, externalSymbols);
     }
 }

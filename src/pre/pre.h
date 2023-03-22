@@ -13,4 +13,5 @@ void freeLinesList(Node* currentLine);
 void freeMacroList(Node* currentNode);
 
 extern int lineCount;
+extern char* currentFileName;
 #endif

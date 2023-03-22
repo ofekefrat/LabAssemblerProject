@@ -1,11 +1,9 @@
 #include "assembly.h"
 
-/* TODO make sure sudden end of line is taken care of */
 /* TODO replace constants? */
 
 int dataCounter, instructionCounter;
 int error; /* to indicate an error has been encountered, and prevent the next phase from taking place. */
-const char* currentFileName; /* the name of the current file being worked on */
 
 /* compile: produce the required files. */
 void compile(FILE* source, const char* fileName) {
@@ -21,7 +19,6 @@ void compile(FILE* source, const char* fileName) {
     dataCounter=0;
     instructionCounter=0;
     error=0;
-    currentFileName = fileName;
     memset(newFileName, 0, MAX_FILE_NAME);
     initializeWordArray(dataArray, MAX_DATA, 0);
     initializeWordArray(instructionArray, MAX_INSTRUCTIONS, INST_ERROR);

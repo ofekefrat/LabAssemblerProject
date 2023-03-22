@@ -39,15 +39,14 @@ void addInstruction(const char *line,
             sourceOperand = getSourceOperand(operand1, opcode, &instruction);
 
             checkWhiteChar(line, i);
-            if (!verifyComma(line, &i))
-                printError("Missing comma");
+            verifyComma(line, &i);
 
             checkWhiteChar(line, i);
             readNextOperand(line, &i, operand2, sizeof(operand2));
             destOperand = getDestOperand(operand2, opcode+stop, &instruction);
             checkWhiteChar(line, i);
             skipWhiteSpaces(line, &i);
-            if (line[i] != ')') printError("Missing closing bracket");
+            if (i < strlen(line) && line[i] != ')') printError("Missing closing bracket");
         }
         else {
             readNextOperand(line, &i, operand2, sizeof(operand2));
@@ -72,9 +71,7 @@ void addInstruction(const char *line,
             readNextOperand(line, &i, operand1, sizeof(operand1));
             sourceOperand = getSourceOperand(operand1, opcode, &instruction);
 
-            if (!verifyComma(line, &i)) {
-                printError("Missing comma");
-            }
+            verifyComma(line, &i);
         }
 
         /* destination operand */
@@ -271,9 +268,13 @@ Word getDestOperand(const char* operand, int opcode, Word* instruction) {
 /* immediateOp: handle an immediate operand. return the resulting word. */
 Word immediateOp(const char* operand, int* ind) {
     Word operandWord = { INST_ERROR };
+    if (*ind >= strlen(operand) || operand[*ind] == '\n') {
+        printError("missing number after #");
+        return operandWord;
+    }
     int num = readNextNumber(operand, ind);
     if (num != INT_MIN) {
-        if (num < (1 << (WORD_LENGTH-2))) {
+        if (num < (1 << (WORD_LENGTH-2)) && num > (-(1 << (WORD_LENGTH-2)))) {
             operandWord.value = immediate;
             operandWord.value |= (num << 2);
         }

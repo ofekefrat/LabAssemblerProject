@@ -4,7 +4,7 @@
 #include "../../root.h"
 
 #define MAX_DATA 666
-#define MAX_DIGITS 4
+#define MAX_DIGITS 6
 #define DIRECTIVES {"data", "string", "extern", "entry"}
 #define NUM_OF_DIRECTIVES 4
 

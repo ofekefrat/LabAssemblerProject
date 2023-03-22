@@ -26,6 +26,11 @@ void addMacroToTable(FILE* input, const char* defLine, List* macros) {
     memset(line, 0, sizeof(line));
     readMacroName(defLine, name);
 
+    if (name[0] == 0) {
+        printError("unnamed macro");
+        return;
+    }
+
     for (i=0; i < NUM_OF_OPCODES; i++) {
         if (!strcmp(name, ops[i])) {
             printError("Macro has the same name as one of the predefined operation names");
