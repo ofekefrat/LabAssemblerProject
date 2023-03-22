@@ -3,7 +3,6 @@
 /* TODO replace constants? */
 
 int dataCounter, instructionCounter;
-int error; /* to indicate an error has been encountered, and prevent the next phase from taking place. */
 
 /* compile: produce the required files. */
 void compile(FILE* source, const char* fileName) {
@@ -18,27 +17,16 @@ void compile(FILE* source, const char* fileName) {
 
     dataCounter=0;
     instructionCounter=0;
-    error=0;
     memset(newFileName, 0, MAX_FILE_NAME);
     initializeWordArray(dataArray, MAX_DATA, 0);
     initializeWordArray(instructionArray, MAX_INSTRUCTIONS, INST_ERROR);
 
     sprintf(newFileName, "%s.ob", fileName);
 
-    if (error) {
-        printf("Errors found, stopping..\n");
-        return;
-    }
-
     phase1(source,
            dataArray,
            instructionArray,
            &symbolTable);
-
-    if (error) {
-        printf("Errors found, stopping..\n");
-        return;
-    }
 
     updateDataAddresses(&symbolTable);
 
@@ -48,12 +36,17 @@ void compile(FILE* source, const char* fileName) {
            &externalSymbols,
            &entrySymbols);
 
+
+    fclose(source);
+
+    freeSymbolTable(symbolTable.head);
+
     if (error) {
         printf("Errors found, stopping..\n");
+        freeSymbolTable(entrySymbols.head);
+        freeSymbolTable(externalSymbols.head);
         return;
     }
-    fclose(source);
-    freeSymbolTable(symbolTable.head);
 
     objectFile = fopen(newFileName, "w+");
     makeObFile(objectFile, instructionArray, dataArray);

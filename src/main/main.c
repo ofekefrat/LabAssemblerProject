@@ -2,6 +2,7 @@
 
 int lineCount=0; /* for error reporting */
 char* currentFileName; /* the name of the current file being worked on */
+int error; /* to indicate an error has been encountered */
 
 int main(int argc, char** argv) {
     int fileCount;
@@ -10,12 +11,20 @@ int main(int argc, char** argv) {
 
     if (argc >= 2) {
         for (fileCount=1; fileCount < argc; fileCount++) {
+            error=0;
             sprintf(fileName, "%s.as", argv[fileCount]);
             currentFileName = fileName;
             source = fopen(fileName, "r");
             if (source) {
                 am = preAssemble(source, argv[fileCount]);
                 fclose(source);
+
+                if (error) {
+                    printf("Errors found in pre-assembly, stopping..\n");
+                    fclose(source);
+                    continue;
+                }
+
                 compile(am, argv[fileCount]);
             }
             else
