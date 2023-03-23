@@ -37,7 +37,7 @@ void addString(char* line, int* ind, Word* dataArray) {
         dataArray[dataCounter++].value = (int) line[i];
     }
 
-    if (i < strlen(line) && line[i] != '\"') {
+    if (i >= strlen(line) || line[i] != '\"') {
         printError("string must be terminated with \"");
     }
 

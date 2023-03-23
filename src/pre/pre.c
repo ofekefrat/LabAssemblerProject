@@ -23,6 +23,11 @@ FILE* preAssemble(FILE* source, const char* oldFileName) {
         lineCount++;
 
         skipWhiteSpaces(line, &i);
+        if (line[i] == ';') {
+            fputs(line, output);
+            continue;
+        }
+
         if (isDef(line)) {
             addMacroToTable(source, line, &macros);
         }

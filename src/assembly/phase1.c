@@ -2,7 +2,7 @@
 
 void phase1(FILE *source, Word *dataArray, Word *instructionArray, List *symbolTable) {
 
-    int i, labelFlag, r; /* r: for passing the opcode around */
+    int i, labelFlag, r;
     char line[MAX_LINE_LENGTH], labelName[MAX_LABEL_LENGTH], word[MAX_TYPE_LENGTH];
 
     rewind(source);
@@ -24,7 +24,11 @@ void phase1(FILE *source, Word *dataArray, Word *instructionArray, List *symbolT
         if (hasLabel(line)) {
             labelFlag=1;
             r = readLabelName(labelName, &i, line);
-            if (r == LABEL_ERROR) continue;
+            if (r == LABEL_ERROR) {
+                addLabel(labelName, "error", 0, symbolTable);
+                isUniqueLabelName(labelName, *symbolTable);
+                continue;
+            }
             if (!isUniqueLabelName(labelName, *symbolTable)) continue;
         }
 
@@ -50,9 +54,10 @@ void phase1(FILE *source, Word *dataArray, Word *instructionArray, List *symbolT
 
             else if (isExternDirective(word)) {
                 if (i >= strlen(line) || line[i] == '\n') {
-                    printError("no label name entered for extern directive");
+                    printError("no operand entered");
                     continue;
                 }
+
                 readNextWord(word, line, &i, sizeof(word));
 
                 if (isUniqueLabelName(word, *symbolTable))
@@ -61,6 +66,9 @@ void phase1(FILE *source, Word *dataArray, Word *instructionArray, List *symbolT
 
             else if (isEntryDirective(word))
                 continue;
+
+            else if (isInstruction(word))
+                printError("Instruction should not start with '.' , only directives");
             else
                 printError("unknown directive");
         }
@@ -73,6 +81,10 @@ void phase1(FILE *source, Word *dataArray, Word *instructionArray, List *symbolT
 
             if ((r = isInstruction(word))) {
                 addInstruction(line, &i, --r, instructionArray);
+            }
+            else if (isDataDirective(word) || isStringDirective(word)
+                        || isExternDirective(word) || isEntryDirective(word)) {
+                printError("directive should start with '.'");
             }
             else
                 printError("unknown command");

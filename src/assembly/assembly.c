@@ -1,7 +1,5 @@
 #include "assembly.h"
 
-/* TODO replace constants? */
-
 int dataCounter, instructionCounter;
 
 /* compile: produce the required files. */
