@@ -46,7 +46,12 @@ void addInstruction(const char *line,
             destOperand = getDestOperand(operand2, opcode+stop, &instruction);
             checkWhiteChar(line, i);
             skipWhiteSpaces(line, &i);
-            if (i < strlen(line) && line[i] != ')') printError("Missing closing bracket");
+            if (i < strlen(line)) {
+                if (line[i] != ')')
+                    printError("Missing closing bracket");
+                else
+                    i++;
+            }
         }
         else {
             readNextOperand(line, &i, operand2, sizeof(operand2));
@@ -80,6 +85,10 @@ void addInstruction(const char *line,
             readNextOperand(line, &i, operand2, sizeof(operand2));
             destOperand = getDestOperand(operand2, opcode, &instruction);
         }
+
+        skipWhiteSpaces(line, &i);
+        if (i < strlen(line) && line[i] != '\n')
+            printError("Too many operands for this instruction");
 
         if ((instruction.value & regDest) == regDest) {
             destOperand.value = immediate;
